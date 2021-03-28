@@ -29,7 +29,7 @@ chrome.storage.sync.get({
 'GoogleFonts' : 'false', 
 'boxFontLink' : '', 
 'darkTheme' : 'false'
-}, function(result)  {
+}, (result) => {
     keySelection.value = result.key;
     boxColour.value = result.boxColour;
     boxBorderColour.value = result.boxBorderColour;
@@ -51,7 +51,7 @@ chrome.storage.sync.get({
         document.body.style.background = '#393939';
         document.body.style.color = '#E3E3E3';
         document.querySelector('select').classList.add('dark');
-        document.querySelectorAll('.link').forEach(element => element.style.color = '#8AB4F8');
+        document.querySelectorAll('.link').forEach((element) => element.style.color = '#8AB4F8');
         document.querySelectorAll('input').forEach((element) => element.classList.add('dark'));
         document.querySelectorAll('button').forEach((element) => element.classList.add('dark'));
     } else {
@@ -68,7 +68,7 @@ positionBelow.addEventListener('click', () => chrome.storage.sync.set({'position
 
 // Add <link> input for using Google Fonts 
 googleFontsCheckbox.addEventListener('change', function() {
-    chrome.storage.sync.get({'GoogleFonts': 'false', 'boxFontLink': ''}, function(result) {
+    chrome.storage.sync.get({'GoogleFonts': 'false', 'boxFontLink': ''}, (result) => {
         if (result.GoogleFonts === 'true') {
             chrome.storage.sync.set({'GoogleFonts' : 'false'});
             document.body.removeChild(document.querySelector('#link-input-label'));
@@ -103,7 +103,7 @@ function addLinkInputBox(result) {
 
 // Save popup box customisation settings
 let saveButton = document.querySelector("#save-box-settings");
-saveButton.addEventListener('click', function() {
+saveButton.addEventListener('click', () => {
     chrome.storage.sync.set({
         'boxColour' : boxColour.value, 
         'boxBorderColour' : boxBorderColour.value,
@@ -122,12 +122,12 @@ document.querySelector('#reload-page').addEventListener('click', () => location.
 
 // Show preview of popup box
 // Check if Google Fonts are being used and put link into <head> section if needed
-chrome.storage.sync.get({'GoogleFonts': 'false', 'boxFontLink': ''}, function(result) {
+chrome.storage.sync.get({'GoogleFonts': 'false', 'boxFontLink': ''}, (result) => {
     if (result.GoogleFonts === 'true') document.head.insertAdjacentHTML('beforeend', result.boxFontLink);
 });
 
 let previewButton = document.querySelector('#preview-box');
-previewButton.addEventListener('click', function() {
+previewButton.addEventListener('click', () => {
     function getRandomInt(max) {
         return Math.floor(Math.random() * Math.floor(max));
     };
@@ -224,13 +224,13 @@ previewButton.addEventListener('click', function() {
 
 // Reset popup box default appearance settings
 let defaultButton = document.querySelector('#default-box-settings');
-defaultButton.addEventListener('click', function() {
+defaultButton.addEventListener('click', () => {
     let confirmButton = document.createElement('button');
     confirmButton.innerText = 'Are you sure you want to reset to default?';
     // check if dark mode is on
     if (document.body.style.background) confirmButton.classList.add('dark');
     defaultButton.replaceWith(confirmButton);
-    confirmButton.addEventListener('click', function() {
+    confirmButton.addEventListener('click', () => {
         chrome.storage.sync.set({
             'boxColour' : '#FFFFE0', 
             'boxBorderColour' : '#808080',
@@ -240,7 +240,7 @@ defaultButton.addEventListener('click', function() {
             'boxFontSize' : '13px', 
             'boxFontLink' : ''
         });
-        chrome.storage.sync.get(['boxColour', 'boxBorderColour', 'boxShadowColour', 'boxFont', 'boxFontColour', 'boxFontSize', 'boxFontLink'], function(result)  {
+        chrome.storage.sync.get(['boxColour', 'boxBorderColour', 'boxShadowColour', 'boxFont', 'boxFontColour', 'boxFontSize', 'boxFontLink'], (result) => {
             positionBelow.click();
             let boxFontLink = document.querySelector('#box-font-link');
             if (boxFontLink) boxFontLink.value = result.boxFontLink;
@@ -263,28 +263,28 @@ defaultButton.addEventListener('click', function() {
 });
 
 // Enable or disable dark theme
-enableDark.addEventListener('click', function() {
+enableDark.addEventListener('click', () => {
     document.body.style.background = '#393939';
     document.body.style.color = '#E3E3E3';
     document.querySelector('select').classList.add('dark');
-    document.querySelectorAll('.link').forEach(element => element.style.color = '#8AB4F8');
+    document.querySelectorAll('.link').forEach((element) => element.style.color = '#8AB4F8');
     document.querySelectorAll('input').forEach((element) => element.classList.add('dark'));
     document.querySelectorAll('button').forEach((element) => element.classList.add('dark'));
     chrome.storage.sync.set({'darkTheme' : 'true'});
 });
 
-disableDark.addEventListener('click', function() {
+disableDark.addEventListener('click', () => {
     document.body.style.background = null;
     document.body.style.color = null;
     document.querySelector('select').classList.remove('dark');
-    document.querySelectorAll('.link').forEach(element => element.style.color = null);
+    document.querySelectorAll('.link').forEach((element) => element.style.color = null);
     document.querySelectorAll('input').forEach((element) => element.classList.remove('dark'));
     document.querySelectorAll('button').forEach((element) => element.classList.remove('dark'));
     chrome.storage.sync.set({'darkTheme' : 'false'});
 });
 
 // Update exchange rates and list of currencies when clicking the button
-document.querySelector('#update-currencies').addEventListener('click', function() {
+document.querySelector('#update-currencies').addEventListener('click', () => {
     fetch('https://api.exchangerate.host/latest', {
         method: 'GET',
         headers: {'cache-control' : 'no-cache'}
@@ -297,10 +297,10 @@ document.querySelector('#update-currencies').addEventListener('click', function(
 });
 
 // Open new tabs for the relevant links
-document.querySelector('#shortcuts-link').addEventListener('click', function() {
+document.querySelector('#shortcuts-link').addEventListener('click', () => {
     chrome.tabs.create({url: "chrome://extensions/shortcuts"});
 });
-document.querySelector('#font-link').addEventListener('click', function() {
+document.querySelector('#font-link').addEventListener('click', () => {
     chrome.tabs.create({url: "https://fonts.google.com/"});
 });
 
@@ -308,10 +308,8 @@ document.querySelector('#font-link').addEventListener('click', function() {
 function displaySuccessMessage(message) {
     // remove old message (if any)
     let oldMsg = document.querySelector('.msg'); 
-    if (oldMsg) {
-        document.body.removeChild(oldMsg);
-    }
-
+    if (oldMsg) document.body.removeChild(oldMsg);
+    
     let successMsg = document.createElement('div');
     successMsg.className = 'msg';
     successMsg.innerText = message;

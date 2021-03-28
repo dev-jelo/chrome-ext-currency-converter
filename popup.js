@@ -4,6 +4,7 @@
 const currencyDropdown = document.querySelectorAll(".currency");
 const fromSelect = document.querySelector("#from");
 const toSelect = document.querySelector("#to");
+const swapButton = document.querySelector("#swap-button");
 const periodSeparator = document.querySelector('#period-separator');
 const commaSeparator = document.querySelector('#comma-separator');
 const inputNumber = document.querySelector('#input-number');
@@ -27,16 +28,18 @@ container.appendChild(label);
 
 let selects = document.querySelectorAll('select');
 
-chrome.storage.sync.get({'toggle': 'on', 'darkTheme': 'false', 'decimalSeparator' : 'period'}, function(result) {
+chrome.storage.sync.get({'toggle': 'on', 'darkTheme': 'false', 'decimalSeparator' : 'period', 'latestRates' : ''}, (result) => {
     if (result.toggle === 'on') {
         toggleSwitch.checked = true;
         if (result.darkTheme === 'true') {
             document.body.style.background = '#393939';
             document.body.style.color = '#E3E3E3';
-            selects.forEach(function(element) {
+            selects.forEach((element) => {
                 element.style.background = '#636363';
                 element.style.color = '#F3F3F3';
             });
+            swapButton.style.background = '#636363';
+            swapButton.style.color = '#F3F3F3';
             inputNumber.style.background = '#636363';
             inputNumber.style.color = '#F3F3F3';
         }
@@ -48,6 +51,8 @@ chrome.storage.sync.get({'toggle': 'on', 'darkTheme': 'false', 'decimalSeparator
             select.style.background = 'gray';
             select.style.color = '#3D3D3D';
         });
+        swapButton.style.background = 'gray';
+        swapButton.style.color = '#3D3D3D';
         inputNumber.style.background = 'gray';
         inputNumber.style.color = '#3D3D3D';
 
@@ -69,10 +74,12 @@ chrome.storage.sync.get({'toggle': 'on', 'darkTheme': 'false', 'decimalSeparator
         if (result.darkTheme === 'true') {
             document.body.style.background = '#262626';
             document.body.style.color = '#545454';
-            selects.forEach(function(element) {
+            selects.forEach((element) => {
                 element.style.background = '#424242';
                 element.style.color = '#545454';
             });
+            swapButton.style.background = '#424242';
+            swapButton.style.color = '#545454';
             inputNumber.style.background = '#424242';
             inputNumber.style.color = '#545454';
             coverPeriod.className = 'cover-dark';
@@ -85,11 +92,35 @@ chrome.storage.sync.get({'toggle': 'on', 'darkTheme': 'false', 'decimalSeparator
 
     // Set radio button to saved decimal separator
     (result.decimalSeparator === 'period') ? periodSeparator.checked = true : commaSeparator.checked = true;
+
+    // Add exchange rates date and reload button
+    let date = document.createElement('div');
+    date.className = 'date';
+    date.innerText = `As at ${result.latestRates.date}`;
+    let reload = document.createElement('div');
+    reload.className = 'reload';
+    reload.innerHTML = ` &#x21BB;`;
+    reload.addEventListener('click', () => {
+        fetch('https://api.exchangerate.host/latest', {
+            method: 'GET',
+            headers: {'cache-control' : 'no-cache'}
+        })
+            .then(response => response.json())
+            .then(result => chrome.storage.sync.set({'latestRates' : result}))
+            .then(() => {
+                let event = new Event('change');
+                fromSelect.dispatchEvent(event);
+            })
+    });
+    date.appendChild(reload);
+    document.body.appendChild(date);
 });
 
+
+
 // Deal with toggle selection and save such selection, i.e. on or off
-toggleSwitch.addEventListener('change', function() {
-    chrome.storage.sync.get({'toggle': 'on', 'darkTheme': 'false'}, function(result) {
+toggleSwitch.addEventListener('change', () => {
+    chrome.storage.sync.get({'toggle': 'on', 'darkTheme': 'false'}, (result) => {
         let oldCovers = document.querySelectorAll('.cover');
         let oldCoversDark = document.querySelectorAll('.cover-dark');
         if (oldCovers) {
@@ -126,6 +157,8 @@ toggleSwitch.addEventListener('change', function() {
                     element.style.background = '#424242';
                     element.style.color = '#545454';
                 });
+                swapButton.style.background = '#424242';
+                swapButton.style.color = '#545454';
                 inputNumber.style.background = '#424242';
                 inputNumber.style.color = '#545454';
                 coverPeriod.className = 'cover-dark';
@@ -137,6 +170,8 @@ toggleSwitch.addEventListener('change', function() {
                     select.style.background = 'gray';
                     select.style.color = '#3D3D3D';
                 });
+                swapButton.style.background = 'gray';
+                swapButton.style.color = '#3D3D3D';
                 inputNumber.style.background = 'gray';
                 inputNumber.style.color = '#3D3D3D';
                 coverPeriod.className = 'cover';
@@ -154,11 +189,14 @@ toggleSwitch.addEventListener('change', function() {
                     element.style.background = '#636363';
                     element.style.color = '#F3F3F3';
                 });
+                swapButton.style.background = '#636363';
+                swapButton.style.color = '#F3F3F3';
                 inputNumber.style.background = '#636363';
                 inputNumber.style.color = '#F3F3F3';
             } else {
                 document.body.style.background = null;
                 selects.forEach((element) => element.style.background = null);
+                swapButton.style.background = null;
                 inputNumber.style.background = null;
             }
             chrome.browserAction.setIcon({path: 'icons/extension_icon_128.png'});
@@ -167,7 +205,7 @@ toggleSwitch.addEventListener('change', function() {
 });
 
 // Get currencies list from chrome storage to populate dropdown selectors
-chrome.storage.sync.get({'latestRates' : '', 'from' : 'USD', 'to' : 'EUR'}, function(result) {
+chrome.storage.sync.get({'latestRates' : '', 'from' : 'USD', 'to' : 'EUR'}, (result) => {
     for (let i = 0; i < 2; i++) {
         for (let j = 0; j < Object.keys(result.latestRates.rates).length; j++) {
             let option = document.createElement("option");
@@ -185,64 +223,50 @@ chrome.storage.sync.get({'latestRates' : '', 'from' : 'USD', 'to' : 'EUR'}, func
 });
 
 // Save selected currencies in chrome storage each time currencies are changed and update exchange rate displayed
-fromSelect.addEventListener("change", function() {
+fromSelect.addEventListener("change", () => {
     chrome.storage.sync.set({"from": fromSelect.value});
-    let oldDate = document.querySelector('.date');
-    if (oldDate) document.body.removeChild(oldDate);
-    chrome.storage.sync.get({'latestRates' : '', 'from' : 'USD', 'to' : 'EUR'}, function(result) {
+    chrome.storage.sync.get({'latestRates' : '', 'from' : 'USD', 'to' : 'EUR'}, (result) => {
         exchangeRate(result);
     });
 });
 
-toSelect.addEventListener("change", function() {
+toSelect.addEventListener("change", () => {
     chrome.storage.sync.set({"to": toSelect.value});
-    let oldDate = document.querySelector('.date');
-    if (oldDate) document.body.removeChild(oldDate);
-    chrome.storage.sync.get({'latestRates' : '', 'from' : 'USD', 'to' : 'EUR'}, function(result) {
+    chrome.storage.sync.get({'latestRates' : '', 'from' : 'USD', 'to' : 'EUR'}, (result) => {
         exchangeRate(result);
     });
 });
 
-// Save decimal separator selection
-periodSeparator.addEventListener('click', function() {
-    chrome.storage.sync.set({'decimalSeparator' : 'period'});
-});
-commaSeparator.addEventListener('click', function() {
-    chrome.storage.sync.set({'decimalSeparator' : 'comma'});
-});
-
-// function to add exchange rate and date of exchange rates obtained to bottom of popup
+// function to update exchange rates shown on bottom after selecting new currencies
 function exchangeRate(result) {
     inputNumber.value = 1;
     fromCurrency.innerText = `${result.from}`
     let rateValue = (result.latestRates.rates[result.to] / result.latestRates.rates[result.from]).toLocaleString(undefined, {minimumFractionDigits: 4, maximumFractionDigits: 4});
     toCurrency.innerText = `${result.to} ${rateValue}`;
-
-    let date = document.createElement('div');
-    date.className = 'date';
-    date.innerText = `As at ${result.latestRates.date}`;
-    let reload = document.createElement('div');
-    reload.className = 'reload';
-    reload.innerHTML = ` &#x21BB;`;
-    reload.addEventListener('click', function() {
-        fetch('https://api.exchangerate.host/latest', {
-            method: 'GET',
-            headers: {'cache-control' : 'no-cache'}
-        })
-            .then(response => response.json())
-            .then(result => chrome.storage.sync.set({'latestRates' : result}))
-            .then(() => {
-                let event = new Event('change');
-                fromSelect.dispatchEvent(event);
-            })
-    });
-    date.appendChild(reload);
-    document.body.appendChild(date);
 };
 
+// Add functionality to swap button, i.e. swaps currencies back and forth when clicked
+swapButton.addEventListener("click", () => {
+    let fromSelectTemp = fromSelect.value;
+    fromSelect.value = toSelect.value;
+    toSelect.value = fromSelectTemp;
+
+    let event = new Event('change');
+    fromSelect.dispatchEvent(event);
+    toSelect.dispatchEvent(event);
+});
+
+// Save decimal separator selection
+periodSeparator.addEventListener('click', () => {
+    chrome.storage.sync.set({'decimalSeparator' : 'period'});
+});
+commaSeparator.addEventListener('click', () => {
+    chrome.storage.sync.set({'decimalSeparator' : 'comma'});
+});
+
 // Listener for the when other numbers are entered into the number input area
-inputNumber.addEventListener('change', function() {
-    chrome.storage.sync.get({'latestRates' : '', 'from' : 'USD', 'to' : 'EUR'}, function(result) {
+inputNumber.addEventListener('change', () => {
+    chrome.storage.sync.get({'latestRates' : '', 'from' : 'USD', 'to' : 'EUR'}, (result) => {
         let rateValue = (result.latestRates.rates[result.to] / result.latestRates.rates[result.from]).toLocaleString(undefined, {minimumFractionDigits: 4, maximumFractionDigits: 4});
         let decimals = 4;
         let numberToConvert = inputNumber.value.replace(/,/g, '.');
@@ -273,7 +297,7 @@ setInputFilter(inputNumber, function(value) {
 });
 
 // Listener for when the shortcut to toggle extension on/off is pressed
-chrome.runtime.onMessage.addListener(function(request, sender, sendResponse) {
+chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
     if (request.toggle === "sc-pressed") {
         let event = new Event('change');
         toggleSwitch.dispatchEvent(event);

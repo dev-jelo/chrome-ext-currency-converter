@@ -1,7 +1,7 @@
 "use strict";
 
 // Check if Google Fonts are being used and put link into <head> section if needed
-chrome.storage.sync.get({'GoogleFonts': 'false', 'boxFontLink': ''}, function(result) {
+chrome.storage.sync.get({'GoogleFonts': 'false', 'boxFontLink': ''}, (result) => {
     if (result.GoogleFonts === 'true') {
         document.head.insertAdjacentHTML('beforeend', result.boxFontLink);
     }
