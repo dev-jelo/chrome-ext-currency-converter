@@ -58,5 +58,3 @@ chrome.commands.onCommand.addListener(function(command) {
         })
     }
 });
-
-chrome.alarms.getAll(function(alarm) {console.log(alarm)});
