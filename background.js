@@ -22,15 +22,17 @@ chrome.runtime.onStartup.addListener(function() {
 });
 
 // Set alarm to update the exchange rates every 6 hours for when chrome is not restarted in that time
-chrome.alarms.create({periodInMinutes : 360});
+chrome.alarms.create("alarm", {periodInMinutes : 360});
 chrome.alarms.onAlarm.addListener(function() {
     fetch('https://api.exchangerate.host/latest', {
         method: 'GET',
         headers: {'cache-control' : 'no-cache'}
     })
         .then(response => response.json())
-        .then(result => chrome.storage.sync.set({'latestRates' : result}));
-    console.log('rates updated');
+        .then(result => {
+            chrome.storage.sync.set({'latestRates' : result});
+            console.log('rates updated');
+        });
 });
 
 // Listen for when the shortcut keys are pressed to toggle extension on/off and send message to popup if it is, otherwise just toggle on/off
@@ -56,3 +58,5 @@ chrome.commands.onCommand.addListener(function(command) {
         })
     }
 });
+
+chrome.alarms.getAll(function(alarm) {console.log(alarm)});

@@ -16,6 +16,10 @@ const disableDark = document.querySelector('#disable-dark');
 const ratesDate = document.querySelector('#current-rates-date');
 
 // Set previously saved settings
+chrome.commands.getAll((commands) => {
+    document.querySelector('#shortcut-keys').innerText = commands[1].shortcut;
+});
+
 chrome.storage.sync.get({
 'latestRates' : '',
 'key' : 'Ctrl', 

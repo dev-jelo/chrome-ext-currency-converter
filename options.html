@@ -3,7 +3,7 @@
     <head>
         <style>
             body {                
-                min-width: 500px;
+                min-width: 600px;
                 text-align: center;
                 height: 1055px;
             }
@@ -117,8 +117,8 @@
     </head>
     <body>
         <h1>Options</h1>
-        <h2>The default shortcut to toggle extension on or off is <strong>Alt + Shift + C</strong></h2>
-        <p class='description'>You can change this by clicking <span id='shortcuts-link' class='link'>here.</span></p>
+        <h2>The current shortcut to toggle this extension on or off is:&nbsp; <strong id='shortcut-keys'></strong></h2>
+        <p class='description'>You can change the keyboard shortcut <span id='shortcuts-link' class='link'>here.</span></p>
         <div class='divider'></div>
         <h2>Key to be held down while highlighting numbers on the page:</h2>
         <select id='keys'>
@@ -126,7 +126,7 @@
             <option>Ctrl</option>
             <option>Alt</option>
             <option>Shift</option>
-            <optgroup label='For Macs'>
+            <optgroup label='For Mac OS'>
                 <option>Cmd</option>
             </optgroup>
         </select>
