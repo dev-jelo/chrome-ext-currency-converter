@@ -2,7 +2,7 @@
     "manifest_version": 3,
     "name": "Currency converter",
     "version": "1.0",
-    "description": "Displays the converted currency in a popup bubble when highlighting numbers on a page. Exchange rates are obtained from https://exchangerate.host",
+    "description": "Displays the converted currency in a popup bubble when highlighting numbers on a page.",
     "permissions": [
         "storage",
         "alarms"
