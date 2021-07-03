@@ -48,10 +48,10 @@ chrome.commands.onCommand.addListener(function(command) {
                 chrome.storage.sync.get(['toggle'], function(result) {
                     if (result.toggle === 'on') {
                         chrome.storage.sync.set({'toggle' : 'off'});
-                        chrome.browserAction.setIcon({path: 'icons/extension_icon_128(off).png'});
+                        chrome.action.setIcon({path: 'icons/extension_icon_128(off).png'});
                     } else {
                         chrome.storage.sync.set({'toggle' : 'on'});
-                        chrome.browserAction.setIcon({path: 'icons/extension_icon_128.png'});
+                        chrome.action.setIcon({path: 'icons/extension_icon_128.png'});
                     } 
                 }); 
             }

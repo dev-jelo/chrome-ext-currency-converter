@@ -1,5 +1,5 @@
 {
-    "manifest_version": 2,
+    "manifest_version": 3,
     "name": "Currency converter",
     "version": "1.0",
     "description": "Displays the converted currency in a popup bubble when highlighting numbers on a page. Exchange rates are obtained from https://exchangerate.host",
@@ -11,10 +11,9 @@
         "128" : "icons/extension_icon_128.png"
     },
     "background": {
-        "scripts": ["background.js"],
-        "persistent": false
+        "service_worker": "background.js"
     },
-    "browser_action": {
+    "action": {
         "default_icon" : "icons/extension_icon_128.png",
         "default_popup": "popup.html"
     },

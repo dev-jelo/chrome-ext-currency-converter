@@ -179,7 +179,7 @@ toggleSwitch.addEventListener('change', () => {
             }
             document.body.appendChild(coverPeriod);
             document.body.appendChild(coverComma);
-            chrome.browserAction.setIcon({path: 'icons/extension_icon_128(off).png'});
+            chrome.action.setIcon({path: 'icons/extension_icon_128(off).png'});
         } else {
             chrome.storage.sync.set({'toggle' : 'on'});
             if (result.darkTheme === 'true') {
@@ -199,7 +199,7 @@ toggleSwitch.addEventListener('change', () => {
                 swapButton.style.background = null;
                 inputNumber.style.background = null;
             }
-            chrome.browserAction.setIcon({path: 'icons/extension_icon_128.png'});
+            chrome.action.setIcon({path: 'icons/extension_icon_128.png'});
         }
     });
 });
