@@ -28,7 +28,7 @@ function convertCurrency(e) {
     'boxColour' : 'lightyellow',
     'boxBorderColour' : 'grey',
     'boxShadowColour' : 'grey',
-    'boxFont': 'Helvetica, Arial, sans-serif', 
+    'boxFont': 'Arial, sans-serif', 
     'boxFontColour': 'black', 
     'boxFontSize': '13px', 
     'GoogleFonts': 'false', 

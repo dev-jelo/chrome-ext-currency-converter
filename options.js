@@ -27,7 +27,7 @@ chrome.storage.sync.get({
 'boxColour': '#FFFFE0', 
 'boxBorderColour' : '#808080', 
 'boxShadowColour' : '#808080',
-'boxFont' : 'Helvetica, Arial, sans-serif', 
+'boxFont' : 'Arial, sans-serif', 
 'boxFontColour' : '#000000', 
 'boxFontSize' : '13px', 
 'GoogleFonts' : 'false', 
@@ -141,7 +141,7 @@ previewButton.addEventListener('click', () => {
         'boxColour' : '#FFFFE0',
         'boxBorderColour' : '#808080',
         'boxShadowColour' : '#808080',
-        'boxFont' : 'Helvetica, Arial, sans-serif',
+        'boxFont' : 'Arial, sans-serif',
         'boxFontColour' : '#000000',
         'boxFontSize' : '13px',
         'boxFontLink' : ''}, function(result) {
@@ -239,7 +239,7 @@ defaultButton.addEventListener('click', () => {
             'boxColour' : '#FFFFE0', 
             'boxBorderColour' : '#808080',
             'boxShadowColour' : '#808080',
-            'boxFont' : 'Helvetica, Arial, sans-serif', 
+            'boxFont' : 'Arial, sans-serif', 
             'boxFontColour' : '#000000', 
             'boxFontSize' : '13px', 
             'boxFontLink' : ''
