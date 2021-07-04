@@ -1,6 +1,6 @@
 {
     "manifest_version": 3,
-    "name": "Currency converter",
+    "name": "Currency Converter",
     "version": "1.0",
     "description": "Displays the converted currency in a popup bubble when highlighting numbers on a page.",
     "permissions": [
