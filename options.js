@@ -17,7 +17,8 @@ const ratesDate = document.querySelector('#current-rates-date');
 
 // Set previously saved settings
 chrome.commands.getAll((commands) => {
-    document.querySelector('#shortcut-keys').innerText = commands[1].shortcut;
+    console.log(commands);
+    document.querySelector('#shortcut-keys').innerText = commands[0].shortcut;
 });
 
 chrome.storage.sync.get({
