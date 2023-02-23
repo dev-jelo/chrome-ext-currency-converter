@@ -334,6 +334,9 @@ document.querySelector('.add-button').addEventListener('click', () => {
     chrome.storage.sync.get(['latestRates', 'savedPairs', 'darkTheme']).then((result) => {
         let newPairsAmount = Object.keys(result.savedPairs).length / 2 + 1;
 
+        // Set maximum number of saved pairs
+        if (newPairsAmount > 20) return;
+
         let pairContainer = document.createElement('div');
         pairContainer.classList.add('pair-container');
         pairContainer.innerHTML = `<p>${newPairsAmount}.</p><p>From:</p>`;
