@@ -64,6 +64,7 @@ chrome.storage.sync.get({'toggle': 'on', 'darkTheme': 'false', 'decimalSeparator
     let reload = document.createElement('div');
     reload.className = 'reload';
     reload.innerHTML = ` &#x21BB;`;
+    // reload.innerHTML = ` &#x21BB;`;
     reload.addEventListener('click', () => {
         fetch('https://api.exchangerate.host/latest', {
             method: 'GET',
