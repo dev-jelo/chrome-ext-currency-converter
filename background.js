@@ -8,7 +8,20 @@ chrome.runtime.onInstalled.addListener(function() {
         headers: {'cache-control' : 'no-cache'}
     })
         .then(response => response.json())
-        .then(result => chrome.storage.sync.set({'latestRates' : result}))
+        .then(result => chrome.storage.sync.set({'latestRates' : result}));
+    
+    // Check if there are previously saved currency pairs, load defaults if not
+    const defaultPairs = {
+        from1 : 'USD',
+        to1 : 'EUR',
+        from2 : 'EUR',
+        to2 : 'GBP',
+        from3 : 'JPY',
+        to3 : 'AUD'
+    };
+    chrome.storage.sync.get({'savedPairs' : defaultPairs }, (result) => {
+        chrome.storage.sync.set({'savedPairs' : result.savedPairs});
+    });
 });
 
 // Update latest exchange rates to chrome storage when opening browser

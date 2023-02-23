@@ -17,6 +17,7 @@ button {
 .date {
     font-style: italic;
     font-size: 11px;
+    padding-bottom: 20px;
 }
 
 .description {
@@ -131,7 +132,28 @@ p {
 #select {
     padding-bottom: 2px;
 }  
-         
+
 #update-currencies {
     margin: 10px auto 8px;
+}
+
+.center {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+}
+
+.pair-container {
+    padding-top: 20px;
+    display: flex;
+    justify-content: space-between;
+    width: 50%;
+}
+
+.add-remove-button {
+    width: 100px;
+    height: 30px;
+    display: inline-block;
+    margin: 30px 10px 10px;
 }

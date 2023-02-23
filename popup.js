@@ -10,11 +10,12 @@ const commaSeparator = document.querySelector('#comma-separator');
 const inputNumber = document.querySelector('#input-number');
 const fromCurrency = document.querySelector('#from-currency');
 const toCurrency = document.querySelector('#to-currency');
+const coverAll = document.querySelector('.cover-all')
 
 // Load correct toggle, i.e. on or off according to previous setting and set dark theme if selected in options
 // Also load correct decimal separator
 let container = document.createElement('div');
-container.className = 'center';
+container.className = 'center-button';
 let label = document.createElement('label');
 label.className = 'switch';
 let toggleSwitch = document.createElement('input');
@@ -45,48 +46,11 @@ chrome.storage.sync.get({'toggle': 'on', 'darkTheme': 'false', 'decimalSeparator
         }
     } else {
         toggleSwitch.checked = false;
-        document.body.style.background = 'dimgray';
-        document.body.style.color = '#3D3D3D';
         selects.forEach((select) => {
             select.style.background = 'gray';
             select.style.color = '#3D3D3D';
         });
-        swapButton.style.background = 'gray';
-        swapButton.style.color = '#3D3D3D';
-        inputNumber.style.background = 'gray';
-        inputNumber.style.color = '#3D3D3D';
-
-        let coverPeriod = document.createElement('div');
-        let periodSeparatorRect = periodSeparator.getBoundingClientRect();
-        coverPeriod.style.height = periodSeparatorRect.height + 'px';
-        coverPeriod.style.width = periodSeparatorRect.width + 'px';
-        coverPeriod.style.top = periodSeparatorRect.top + 35 + 'px';
-        coverPeriod.style.left = periodSeparatorRect.left + 'px';
-        coverPeriod.className = 'cover';
-        
-        let coverComma = document.createElement('div');
-        let commaSeparatorRect = commaSeparator.getBoundingClientRect();
-        coverComma.style.height = commaSeparatorRect.height + 'px';
-        coverComma.style.width = commaSeparatorRect.width + 'px';
-        coverComma.style.top = commaSeparatorRect.top + 35 + 'px';
-        coverComma.style.left = commaSeparatorRect.left + 'px';
-        coverComma.className = 'cover';
-        if (result.darkTheme === 'true') {
-            document.body.style.background = '#262626';
-            document.body.style.color = '#545454';
-            selects.forEach((element) => {
-                element.style.background = '#424242';
-                element.style.color = '#545454';
-            });
-            swapButton.style.background = '#424242';
-            swapButton.style.color = '#545454';
-            inputNumber.style.background = '#424242';
-            inputNumber.style.color = '#545454';
-            coverPeriod.className = 'cover-dark';
-            coverComma.className = 'cover-dark';
-        }
-        document.body.appendChild(coverPeriod);
-        document.body.appendChild(coverComma);
+        coverAll.style.display = 'block';
     }
     document.body.insertBefore(container, document.body.firstChild);
 
@@ -121,84 +85,13 @@ chrome.storage.sync.get({'toggle': 'on', 'darkTheme': 'false', 'decimalSeparator
 // Deal with toggle selection and save such selection, i.e. on or off
 toggleSwitch.addEventListener('change', () => {
     chrome.storage.sync.get({'toggle': 'on', 'darkTheme': 'false'}, (result) => {
-        let oldCovers = document.querySelectorAll('.cover');
-        let oldCoversDark = document.querySelectorAll('.cover-dark');
-        if (oldCovers) {
-            oldCovers.forEach((cover) => {
-                document.body.removeChild(cover);
-            })
-        }
-        if (oldCoversDark) {
-            oldCoversDark.forEach((cover) => {
-                document.body.removeChild(cover);
-            })
-        }
         if (result.toggle === 'on') {
             chrome.storage.sync.set({'toggle' : 'off'});
-            let coverPeriod = document.createElement('div');
-            let periodSeparatorRect = periodSeparator.getBoundingClientRect();
-            coverPeriod.style.height = periodSeparatorRect.height + 'px';
-            coverPeriod.style.width = periodSeparatorRect.width + 'px';
-            coverPeriod.style.top = periodSeparatorRect.top + 'px';
-            coverPeriod.style.left = periodSeparatorRect.left + 'px';
-            coverPeriod.className = 'cover';
-            
-            let coverComma = document.createElement('div');
-            let commaSeparatorRect = commaSeparator.getBoundingClientRect();
-            coverComma.style.height = commaSeparatorRect.height + 'px';
-            coverComma.style.width = commaSeparatorRect.width + 'px';
-            coverComma.style.top = commaSeparatorRect.top + 'px';
-            coverComma.style.left = commaSeparatorRect.left + 'px';
-            coverComma.className = 'cover';
-            if (result.darkTheme === 'true') {
-                document.body.style.background = '#262626';
-                document.body.style.color = '#545454';
-                selects.forEach(function(element) {
-                    element.style.background = '#424242';
-                    element.style.color = '#545454';
-                });
-                swapButton.style.background = '#424242';
-                swapButton.style.color = '#545454';
-                inputNumber.style.background = '#424242';
-                inputNumber.style.color = '#545454';
-                coverPeriod.className = 'cover-dark';
-                coverComma.className = 'cover-dark';
-            } else {
-                document.body.style.background = 'dimgray';
-                document.body.style.color = '#3D3D3D';
-                selects.forEach((select) => {
-                    select.style.background = 'gray';
-                    select.style.color = '#3D3D3D';
-                });
-                swapButton.style.background = 'gray';
-                swapButton.style.color = '#3D3D3D';
-                inputNumber.style.background = 'gray';
-                inputNumber.style.color = '#3D3D3D';
-                coverPeriod.className = 'cover';
-                coverComma.className = 'cover';
-            }
-            document.body.appendChild(coverPeriod);
-            document.body.appendChild(coverComma);
+            coverAll.style.display = 'block';
             chrome.action.setIcon({path: 'icons/extension_icon_128(off).png'});
         } else {
             chrome.storage.sync.set({'toggle' : 'on'});
-            if (result.darkTheme === 'true') {
-                document.body.style.background = ' #393939';
-                document.body.style.color = '#E3E3E3';
-                selects.forEach(function(element) {
-                    element.style.background = '#636363';
-                    element.style.color = '#F3F3F3';
-                });
-                swapButton.style.background = '#636363';
-                swapButton.style.color = '#F3F3F3';
-                inputNumber.style.background = '#636363';
-                inputNumber.style.color = '#F3F3F3';
-            } else {
-                document.body.style.background = null;
-                selects.forEach((element) => element.style.background = null);
-                swapButton.style.background = null;
-                inputNumber.style.background = null;
-            }
+            coverAll.style.display = 'none';
             chrome.action.setIcon({path: 'icons/extension_icon_128.png'});
         }
     });
@@ -228,12 +121,26 @@ fromSelect.addEventListener("change", () => {
     chrome.storage.sync.get({'latestRates' : '', 'from' : 'USD', 'to' : 'EUR'}, (result) => {
         exchangeRate(result);
     });
+
+    // Unhighlight all saved pair buttons when selecting new currencies
+    document.querySelectorAll('.saved-pair-button').forEach((elem) => {
+        elem.classList.remove('selected-button');
+        elem.classList.remove('selected-button-dark');
+        chrome.storage.sync.set({ 'savedNumber' : 'none' });
+    });
 });
 
 toSelect.addEventListener("change", () => {
     chrome.storage.sync.set({"to": toSelect.value});
     chrome.storage.sync.get({'latestRates' : '', 'from' : 'USD', 'to' : 'EUR'}, (result) => {
         exchangeRate(result);
+    });
+
+    // Unhighlight all saved pair buttons when selecting new currencies
+    document.querySelectorAll('.saved-pair-button').forEach((elem) => {
+        elem.classList.remove('selected-button');
+        elem.classList.remove('selected-button-dark');
+        chrome.storage.sync.set({ 'savedNumber' : 'none' });
     });
 });
 
@@ -254,6 +161,50 @@ swapButton.addEventListener("click", () => {
     let event = new Event('change');
     fromSelect.dispatchEvent(event);
     toSelect.dispatchEvent(event);
+});
+
+// Load saved pairs buttons
+const savedPairsContainer = document.querySelector('.saved-pairs-container');
+chrome.storage.sync.get({ 'savedPairs' : '', 'darkTheme' : 'false', 'savedNumber' : 'none' }, (result) => {
+    let pairsAmount = Object.keys(result.savedPairs).length / 2;
+    for (let i = 1; i <= pairsAmount; i++) {
+        let savedPairButton = document.createElement('div');
+
+        result.darkTheme === 'true' ? savedPairButton.classList.add('saved-pair-button', 'saved-pair-button-dark') : savedPairButton.classList.add('saved-pair-button');
+        savedPairButton.innerHTML = i;
+
+        // Change currencies to saved pair on click of relevant button
+        savedPairButton.addEventListener('click', (e) => {
+            let number = e.target.innerHTML;
+            fromSelect.value = result.savedPairs[`from${number}`];
+            toSelect.value = result.savedPairs[`to${number}`];
+
+            let event = new Event('change');
+            fromSelect.dispatchEvent(event);
+            toSelect.dispatchEvent(event);
+
+            // Highlight selected and unhighlight others
+            document.querySelectorAll('.saved-pair-button').forEach((elem) => {
+                elem.classList.remove('selected-button');
+                elem.classList.remove('selected-button-dark');
+            });
+            result.darkTheme === 'true' ? e.target.classList.add('selected-button-dark') : e.target.classList.add('selected-button');
+
+            // Record which saved pair number was clicked so it stays highlighted when unchanged
+            chrome.storage.sync.set({ 'savedNumber' : number });
+        });
+
+        // Highlight relevant button if previously set
+        if (result.savedNumber == i) {
+            result.darkTheme === 'true' ? savedPairButton.classList.add('selected-button-dark') : savedPairButton.classList.add('selected-button');
+
+            // Set currency pair to saved values
+            fromSelect.value = result.savedPairs[`from${i}`];
+            toSelect.value = result.savedPairs[`to${i}`];
+        };
+
+        savedPairsContainer.appendChild(savedPairButton);
+    };
 });
 
 // Save decimal separator selection

@@ -14,10 +14,10 @@ const googleFontsCheckbox = document.querySelector('#Google-fonts-checkbox');
 const enableDark = document.querySelector('#enable-dark');
 const disableDark = document.querySelector('#disable-dark');
 const ratesDate = document.querySelector('#current-rates-date');
+const container = document.querySelector('.center');
 
 // Set previously saved settings
 chrome.commands.getAll((commands) => {
-    console.log(commands);
     document.querySelector('#shortcut-keys').innerText = commands[0].shortcut;
 });
 
@@ -267,24 +267,162 @@ defaultButton.addEventListener('click', () => {
     setTimeout(() => document.body.style.background ? defaultButton.classList.add('dark') : defaultButton.classList.remove('dark'), 4000);
 });
 
+// Generate saved currency pairs and populate exchange rate currencies in dropdown lists
+chrome.storage.sync.get(['latestRates', 'savedPairs', 'darkTheme']).then((result) => {
+    // Get number of saved pairs
+    let pairsAmount = Object.keys(result.savedPairs).length / 2;
+    
+    // Add rows of saved pairs to page
+    for (let i = 1; i <= pairsAmount; i++) {
+        let pairContainer = document.createElement('div');
+        pairContainer.classList.add('pair-container');
+        pairContainer.innerHTML = 
+                `<p>${i}.</p>
+                <p>From:</p>
+                <select class="currency-dropdown from"></select>
+                <p>To:</p>
+                <select class="currency-dropdown to"></select>`
+        container.appendChild(pairContainer);
+    };
+
+    return result;
+}).then((result) => { // populate drop down lists
+    let currencyDropdowns = document.querySelectorAll('.currency-dropdown');
+    currencyDropdowns.forEach((elem) => {
+        for (let i = 0; i < Object.keys(result.latestRates.rates).length; i++) {
+            let option = document.createElement('option');
+            option.text = Object.keys(result.latestRates.rates)[i];
+            elem.add(option);
+        };
+
+        // Set values of saved pairs
+        let number = elem.parentElement.firstChild.innerHTML.slice(0, -1);
+        if (elem.classList.contains('from')) {
+            elem.value = result.savedPairs[`from${number}`];
+
+            // Listener to save changes to storage
+            elem.addEventListener('change', () => {
+                chrome.storage.sync.get('savedPairs', (result) => {
+                    let newSaved = result.savedPairs;
+                    newSaved[`from${number}`] = elem.value;
+                    chrome.storage.sync.set( { 'savedPairs' : newSaved });
+                })
+            });
+        } else {
+            elem.value = result.savedPairs[`to${number}`];
+
+            // Listener to save changes to storage
+            elem.addEventListener('change', () => {
+                chrome.storage.sync.get('savedPairs', (result) => {
+                    let newSaved = result.savedPairs;
+                    newSaved[`to${number}`] = elem.value;
+                    chrome.storage.sync.set( { 'savedPairs' : newSaved });
+                });
+            });
+        };
+    });
+
+    return result;
+}).then((result) => { // Set dark theme if necessary
+    if (result.darkTheme == 'true') {
+        document.querySelectorAll('.currency-dropdown').forEach((elem) => elem.classList.add('dark'));
+    };
+});
+
+// Add functionality to add saved currency pair button
+document.querySelector('.add-button').addEventListener('click', () => {
+    chrome.storage.sync.get(['latestRates', 'savedPairs', 'darkTheme']).then((result) => {
+        let newPairsAmount = Object.keys(result.savedPairs).length / 2 + 1;
+
+        let pairContainer = document.createElement('div');
+        pairContainer.classList.add('pair-container');
+        pairContainer.innerHTML = `<p>${newPairsAmount}.</p><p>From:</p>`;
+        let selectFrom = document.createElement('select');
+        let selectTo = document.createElement('select');        
+        selectFrom.classList.add('currency-dropdown', 'from');
+        selectTo.classList.add('currency-dropdown', 'to');
+        
+        if (result.darkTheme == 'true') {
+            selectFrom.classList.add('dark');
+            selectTo.classList.add('dark');
+        }
+
+        // Populate drop down lists
+        for (let i = 0; i < Object.keys(result.latestRates.rates).length; i++) {
+            let option = document.createElement('option');
+            option.text = Object.keys(result.latestRates.rates)[i];
+            selectFrom.add(option);
+            let option2 = option.cloneNode(true);
+            selectTo.add(option2);
+        };
+
+        pairContainer.appendChild(selectFrom);
+        let p = document.createElement('p');
+        p.innerHTML = 'To:'
+        pairContainer.appendChild(p);
+        pairContainer.appendChild(selectTo);
+        
+        container.appendChild(pairContainer);
+        
+        // Save new pair values to storage
+        let newSaved = result.savedPairs;
+        newSaved[`from${newPairsAmount}`] = selectFrom.value;
+        newSaved[`to${newPairsAmount}`] = selectTo.value;
+        chrome.storage.sync.set({ 'savedPairs' : newSaved });
+
+        // Add listeners to save changes made
+        selectFrom.addEventListener('change', () => {
+            chrome.storage.sync.get('savedPairs', (result) => {
+                let newSaved = result.savedPairs;
+                newSaved[`from${newPairsAmount}`] = selectFrom.value;
+                chrome.storage.sync.set( { 'savedPairs' : newSaved });
+            })
+        });
+        selectTo.addEventListener('change', () => {
+            chrome.storage.sync.get('savedPairs', (result) => {
+                let newSaved = result.savedPairs;
+                newSaved[`to${newPairsAmount}`] = selectTo.value;
+                chrome.storage.sync.set( { 'savedPairs' : newSaved });
+            });
+        });
+    });
+});
+
+// Add functionality to remove saved currency pair button
+document.querySelector('.remove-button').addEventListener('click', () => {
+    chrome.storage.sync.get('savedPairs', (result) => {
+        const savedPairsList = document.querySelectorAll('.pair-container');
+        let savedPairsNumber = savedPairsList.length;
+        savedPairsList.forEach((elem) => {
+            if (elem.firstChild.innerHTML.slice(0, -1) == savedPairsNumber) {
+                elem.remove();
+                let newSaved = result.savedPairs;
+                delete newSaved[`from${savedPairsNumber}`];
+                delete newSaved[`to${savedPairsNumber}`];
+                chrome.storage.sync.set({ 'savedPairs' : newSaved });
+            }
+        });
+    });
+});
+
 // Enable or disable dark theme
 enableDark.addEventListener('click', () => {
     document.body.style.background = '#393939';
     document.body.style.color = '#E3E3E3';
-    document.querySelector('select').classList.add('dark');
-    document.querySelectorAll('.link').forEach((element) => element.style.color = '#8AB4F8');
-    document.querySelectorAll('input').forEach((element) => element.classList.add('dark'));
-    document.querySelectorAll('button').forEach((element) => element.classList.add('dark'));
+    document.querySelectorAll('select').forEach((elem) => {elem.classList.add('dark')});
+    document.querySelectorAll('.link').forEach((elem) => elem.style.color = '#8AB4F8');
+    document.querySelectorAll('input').forEach((elem) => elem.classList.add('dark'));
+    document.querySelectorAll('button').forEach((elem) => elem.classList.add('dark'));
     chrome.storage.sync.set({'darkTheme' : 'true'});
 });
 
 disableDark.addEventListener('click', () => {
     document.body.style.background = null;
     document.body.style.color = null;
-    document.querySelector('select').classList.remove('dark');
-    document.querySelectorAll('.link').forEach((element) => element.style.color = null);
-    document.querySelectorAll('input').forEach((element) => element.classList.remove('dark'));
-    document.querySelectorAll('button').forEach((element) => element.classList.remove('dark'));
+    document.querySelectorAll('select').forEach((elem) => {elem.classList.remove('dark')});
+    document.querySelectorAll('.link').forEach((elem) => elem.style.color = null);
+    document.querySelectorAll('input').forEach((elem) => elem.classList.remove('dark'));
+    document.querySelectorAll('button').forEach((elem) => elem.classList.remove('dark'));
     chrome.storage.sync.set({'darkTheme' : 'false'});
 });
 
