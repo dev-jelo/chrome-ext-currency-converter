@@ -194,6 +194,31 @@ chrome.storage.sync.get({ 'savedPairs' : '', 'darkTheme' : 'false', 'savedNumber
             chrome.storage.sync.set({ 'savedNumber' : number });
         });
 
+        // Show pair value when hovering with mouse
+        let previousFrom;
+        let previousTo;
+        savedPairButton.addEventListener('mouseenter', (e) => {
+            previousFrom = fromSelect.value;
+            previousTo = toSelect.value;
+            fromSelect.value = result.savedPairs[`from${e.target.innerHTML}`];
+            toSelect.value = result.savedPairs[`to${e.target.innerHTML}`];
+            fromSelect.classList.add('preview');
+            toSelect.classList.add('preview');
+        })
+        savedPairButton.addEventListener('mouseleave', () => {
+            chrome.storage.sync.get(['savedPairs', 'savedNumber'], (result) => {
+                if (result.savedNumber !== 'none') {
+                    fromSelect.value = result.savedPairs[`from${result.savedNumber}`];
+                    toSelect.value = result.savedPairs[`to${result.savedNumber}`];
+                } else {
+                    fromSelect.value = previousFrom;
+                    toSelect.value = previousTo;
+                }
+                fromSelect.classList.remove('preview');
+                toSelect.classList.remove('preview');
+            })
+        });
+
         // Highlight relevant button if previously set
         if (result.savedNumber == i) {
             result.darkTheme === 'true' ? savedPairButton.classList.add('selected-button-dark') : savedPairButton.classList.add('selected-button');
