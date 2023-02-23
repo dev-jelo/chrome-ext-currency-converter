@@ -70,10 +70,18 @@ chrome.storage.sync.get({'toggle': 'on', 'darkTheme': 'false', 'decimalSeparator
             headers: {'cache-control' : 'no-cache'}
         })
             .then(response => response.json())
-            .then(result => chrome.storage.sync.set({'latestRates' : result}))
-            .then(() => {
+            .then((result) => {
+                chrome.storage.sync.set({'latestRates' : result});
+                return result;
+            })
+            .then((result) => {
                 let event = new Event('change');
                 fromSelect.dispatchEvent(event);
+                return result;
+            })
+            .then((result) => {
+                date.innerText = `As at ${result.latestRates.date}`;
+                date.appendChild(reload);
             })
     });
     date.appendChild(reload);
