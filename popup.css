@@ -1,47 +1,56 @@
 body {
     width: 90px;
 }
+
 .center {
     text-align: center;
     padding: 5px 0;
 }
+
 .center-number-input {
     text-align: center;
     padding-top: 5px;
 }
+
 .cover {
     background-color: dimgray;
     opacity: 0.7;
     pointer-events: none;
     position: fixed;
 }
+
 .cover-dark {
     background-color: #262626;
     opacity: 0.7;
     pointer-events: none;
     position: fixed;
 }
+
 .date {
     text-align: center;
     font-size: 9px;
     font-style: italic;
     margin-top: 8px;
 }
+
 .divider {
     border-bottom: 1px solid gray;
     margin: 7px auto;  
     width: 90px;
 }
+
 #input-number {
     font-size: 12px;
     text-align: center;
     width: 65px;
 }
+
 input[type=number]::-webkit-inner-spin-button, 
 input[type=number]::-webkit-outer-spin-button { 
     appearance: none;
     margin: 0; 
 }
+
 .rate {
     font-style: italic;
     text-align: center;
@@ -52,6 +61,7 @@ input[type=number]::-webkit-outer-spin-button {
 #rate-divider {
     margin-top: 3px;
 }
+
 .reload {
     display: inline-block;
     position: relative;
@@ -61,12 +71,15 @@ input[type=number]::-webkit-outer-spin-button {
     user-select: none;
     cursor: pointer;
 }
+
 .reload:hover {
     color: gray;
 }
+
 select {
     width: 60px;
 }
+
 .text {
     display: block;
     font-size: 13px;
@@ -79,9 +92,11 @@ select {
     width: 40px;
     height: 22px;
 }
+
 .switch input { 
     display: none;
 }
+
 .slider {  
     border-radius: 34px;
     position: absolute;
@@ -93,6 +108,7 @@ select {
     background-color: #ccc;
     transition: .2s;
 }
+
 .slider:before {
     border-radius: 50%;
     position: absolute;
@@ -104,9 +120,11 @@ select {
     background-color: white;
     transition: .2s;
 }
+
 input:checked + .slider {
     background-color: #2196F3;
 }
+
 input:checked + .slider:before {
     transform: translateX(18px);
 }
@@ -122,10 +140,12 @@ input:checked + .slider:before {
     top: -5px;
     width: 80px;
 }
+
 #period-separator {
     grid-column-start: 1;
     grid-row-start: 2;
 }
+
 label {
     align-self: start;
     font-size: 25px;
@@ -133,6 +153,7 @@ label {
     position: relative;
     top: -3px;
 }
+
 input[type=radio] {
     align-self: end;
     margin: 0;
