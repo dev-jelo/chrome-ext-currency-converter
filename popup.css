@@ -36,7 +36,7 @@ body {
 }
 
 #input-number {
-    font-size: 12px;
+    font-size: inherit;
     text-align: center;
     width: 65px;
 }
@@ -133,7 +133,7 @@ input:checked + .slider:before {
     margin: 0 auto;
     position: relative;
     top: -5px;
-    width: 80px;
+    width: 100px;
 }
 
 #period-separator {
