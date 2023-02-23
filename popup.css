@@ -162,6 +162,7 @@ input[type=radio] {
 .saved-pair-button {
     height: 25px;
     width: 25px;
+    line-height: 22px;
     text-align: center;
     border: solid gray 1px;
     cursor: pointer;
@@ -180,11 +181,13 @@ input[type=radio] {
 .selected-button {
     background-color: rgb(219, 219, 219);
     border: solid black 2px;
+    line-height: 10px;
 }
 
 .selected-button-dark {
     background-color: gray;
     border: solid rgb(207, 207, 207) 2px;
+    line-height: 20px;
 }
 
 .cover-all {
