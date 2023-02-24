@@ -30,28 +30,28 @@ container.appendChild(label);
 let selects = document.querySelectorAll('select');
 
 chrome.storage.sync.get({'toggle': 'on', 'darkTheme': 'false', 'decimalSeparator' : 'period', 'latestRates' : ''}, (result) => {
+    // Check if toggle is on or off
     if (result.toggle === 'on') {
         toggleSwitch.checked = true;
-        if (result.darkTheme === 'true') {
-            document.body.style.background = '#393939';
-            document.body.style.color = '#E3E3E3';
-            selects.forEach((element) => {
-                element.style.background = '#636363';
-                element.style.color = '#F3F3F3';
-            });
-            swapButton.style.background = '#636363';
-            swapButton.style.color = '#F3F3F3';
-            inputNumber.style.background = '#636363';
-            inputNumber.style.color = '#F3F3F3';
-        }
     } else {
         toggleSwitch.checked = false;
-        selects.forEach((select) => {
-            select.style.background = 'gray';
-            select.style.color = '#3D3D3D';
-        });
         coverAll.style.display = 'block';
     }
+
+    // Check if dark theme is set
+    if (result.darkTheme === 'true') {
+        document.body.style.background = '#393939';
+        document.body.style.color = '#E3E3E3';
+        selects.forEach((element) => {
+            element.style.background = '#636363';
+            element.style.color = '#F3F3F3';
+        });
+        swapButton.style.background = '#636363';
+        swapButton.style.color = '#F3F3F3';
+        inputNumber.style.background = '#636363';
+        inputNumber.style.color = '#F3F3F3';
+    }
+
     document.body.insertBefore(container, document.body.firstChild);
 
     // Set radio button to saved decimal separator
