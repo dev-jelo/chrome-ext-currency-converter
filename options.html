@@ -1,91 +1,115 @@
 <!DOCTYPE html>
 <html>
-    <head>
-        <link rel="stylesheet" href="./options.css">
-    </head>
-    <body>
-        <h1>Options</h1>
-        <h2>The current shortcut to toggle this extension on or off is:&nbsp; <strong id='shortcut-keys'></strong></h2>
-        <p class='description'>You can change the keyboard shortcut <span id='shortcuts-link' class='link'>here.</span></p>
-        <div class='divider'></div>
-        <h2>Key to be held down while highlighting numbers on the page:</h2>
-        <select id='keys'>
-            <option>None</option>
-            <option>Ctrl</option>
-            <option>Alt</option>
-            <option>Shift</option>
-            <optgroup label='For Mac OS'>
-                <option>Cmd</option>
-            </optgroup>
-        </select>
-        <div class='divider'></div>
-        <h2 class='h2-customise'>Customise the popup box</h2>
-        <p>Popup box appears above or below selection:</p>
-        <label class='label-radio-abovebelow'>
-            <input type='radio' id='position-above' name='above-below'>Above
-        </label>
-        <label class='label-radio-abovebelow'>
-            <input type='radio' id='position-below' name='above-below'>Below
-        </label>
-        <br>
-        <label>Box colour:
-            <br>
-            <input type='color' id='box-colour'>
-        </label>
-        <br>
-        <label>Box border colour:
-            <br>
-            <input type='color' id='box-border-colour'>
-        </label>
-        <br>
-        <label>Box shadow colour:
-            <br>
-            <input type='color' id='box-shadow-colour'>
-        </label>
-        <br>
-        <label id='font-label'>Font:
-            <br>
-            <input type='text' id='box-font'>
-        </label>
-        <br>
-        <label id='Google-fonts-label'><input type='checkbox' id='Google-fonts-checkbox'>Use Google Fonts</label>
-        <p class='description description-font'>
-            Google fonts can be found <span id='font-link' class='link'>here</span>
-        </p>
-        <label>Font size:
-            <br>
-            <input type='text' id='box-font-size'>
-        </Label>
-        <br>
-        <label>Text colour:
-            <br>
-            <input type='color' id='box-font-colour'>
-        </Label>
-        <br>
-        <button type='button' id='save-box-settings'><b>Save Settings</b></button>
-        <button type='button' id='reload-page'>Reload page</button>
-        <span class='description'>* You will have to reload the page if you want to preview Google Fonts</span>
-        <button type='button' id='preview-box'>Preview</button>
-        <button type='button' id='default-box-settings'>Reset To Default</button>
-        <div class='divider'></div>
-        <h2>Set saved exchange pairs</h2>
-        <div class="center"></div>
-        <button class="add-remove-button add-button">Add</button>
-        <button class="add-remove-button remove-button">Remove</button>
-        <div class='divider'></div>
-        <h2>Enable or disable dark theme</h2>
-        <p class='description'>This only applies to this options page and the menu that appears when clicking on the icon in the toolbar.</p>
-        <label class='label-radio'>
-            <input type='radio' id='enable-dark' name='dark-theme'>Enable dark theme
-        </label>
-        <label class='label-radio'>
-            <input type='radio' id='disable-dark' name='dark-theme'>Disable dark theme
-        </label>
-        <div class='divider'></div>
-        <h2>Update exchange rates and list of currencies</h2>
-        <button type='button' id='update-currencies'>Update</button>
-        <span class='date'>Exchange rates updated as at </span><span id='current-rates-date' class='date'></span>
-        
-        <script src="./options.js"></script>
-    </body>
+  <head>
+    <link rel="stylesheet" href="./options.css" />
+  </head>
+  <body>
+    <h1>Options</h1>
+    <h2>
+      The current shortcut to toggle this extension on or off is:&nbsp;
+      <strong id="shortcut-keys"></strong>
+    </h2>
+    <p class="description">
+      You can change the keyboard shortcut by going to about:addons -> click
+      "Extensions" in the left sidebar -> click the cog next to "Manage your
+      Extensions" -> click "Manage Extension Shortcuts".
+    </p>
+    <div class="divider"></div>
+    <h2>Key to be held down while highlighting numbers on the page:</h2>
+    <select id="keys">
+      <option>None</option>
+      <option>Ctrl</option>
+      <option>Alt</option>
+      <option>Shift</option>
+      <optgroup label="For Mac OS">
+        <option>Cmd</option>
+      </optgroup>
+    </select>
+    <div class="divider"></div>
+    <h2 class="h2-customise">Customise the popup box</h2>
+    <p>Popup box appears above or below selection:</p>
+    <label class="label-radio-abovebelow">
+      <input type="radio" id="position-above" name="above-below" />Above
+    </label>
+    <label class="label-radio-abovebelow">
+      <input type="radio" id="position-below" name="above-below" />Below
+    </label>
+    <br />
+    <label
+      >Box colour:
+      <br />
+      <input type="color" id="box-colour" />
+    </label>
+    <br />
+    <label
+      >Box border colour:
+      <br />
+      <input type="color" id="box-border-colour" />
+    </label>
+    <br />
+    <label
+      >Box shadow colour:
+      <br />
+      <input type="color" id="box-shadow-colour" />
+    </label>
+    <br />
+    <label id="font-label"
+      >Font:
+      <br />
+      <input type="text" id="box-font" />
+    </label>
+    <br />
+    <label id="Google-fonts-label"
+      ><input type="checkbox" id="Google-fonts-checkbox" />Use Google
+      Fonts</label
+    >
+    <p class="description description-font">
+      Google fonts can be found <span id="font-link" class="link">here</span>
+    </p>
+    <label
+      >Font size:
+      <br />
+      <input type="text" id="box-font-size" />
+    </label>
+    <br />
+    <label
+      >Text colour:
+      <br />
+      <input type="color" id="box-font-colour" />
+    </label>
+    <br />
+    <button type="button" id="save-box-settings"><b>Save Settings</b></button>
+    <button type="button" id="reload-page">Reload page</button>
+    <span class="description"
+      >* You will have to reload the page if you want to preview Google
+      Fonts</span
+    >
+    <button type="button" id="preview-box">Preview</button>
+    <button type="button" id="default-box-settings">Reset To Default</button>
+    <div class="divider"></div>
+    <h2>Set saved exchange pairs</h2>
+    <div class="center"></div>
+    <button class="add-remove-button add-button">Add</button>
+    <button class="add-remove-button remove-button">Remove</button>
+    <div class="divider"></div>
+    <h2>Enable or disable dark theme</h2>
+    <p class="description">
+      This only applies to this options page and the menu that appears when
+      clicking on the icon in the toolbar.
+    </p>
+    <label class="label-radio">
+      <input type="radio" id="enable-dark" name="dark-theme" />Enable dark theme
+    </label>
+    <label class="label-radio">
+      <input type="radio" id="disable-dark" name="dark-theme" />Disable dark
+      theme
+    </label>
+    <div class="divider"></div>
+    <h2>Update exchange rates and list of currencies</h2>
+    <button type="button" id="update-currencies">Update</button>
+    <span class="date">Exchange rates updated as at </span
+    ><span id="current-rates-date" class="date"></span>
+
+    <script src="./options.js"></script>
+  </body>
 </html>
