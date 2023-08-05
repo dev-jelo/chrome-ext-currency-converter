@@ -29,6 +29,8 @@ container.appendChild(label);
 
 let selects = document.querySelectorAll("select");
 
+let rotateDeg = 0;
+
 browser.storage.sync.get(
   {
     toggle: "on",
@@ -66,36 +68,42 @@ browser.storage.sync.get(
       ? (periodSeparator.checked = true)
       : (commaSeparator.checked = true);
 
-    // Add exchange rates date and reload button
-    let date = document.createElement("div");
-    date.className = "date";
-    date.innerText = `As at ${result.latestRates.date}`;
-    let reload = document.createElement("div");
-    reload.className = "reload";
-    reload.innerHTML = ` &#x21BB;`;
-    // reload.innerHTML = ` &#x21BB;`;
-    reload.addEventListener("click", () => {
-      fetch("https://api.exchangerate.host/latest", {
-        method: "GET",
-        headers: { "cache-control": "no-cache" },
-      })
-        .then((response) => response.json())
-        .then((result) => {
-          browser.storage.sync.set({ latestRates: result });
-          return result;
+    // Add exchange rates date and update rates button event listener
+    const updateRatesButton = document.querySelector(".reload");
+    const ratesDate = document.querySelector("#rates-date");
+
+    ratesDate.innerText = result.latestRates.date;
+
+    updateRatesButton.addEventListener("click", () => {
+      rotateDeg += 360;
+      updateRatesButton.style.transform = `rotate(${rotateDeg}deg)`;
+      updateRatesButton.style.pointerEvents = "none";
+      setTimeout(() => {
+        updateRatesButton.style.pointerEvents = "auto";
+      }, 1000);
+
+      browser.storage.sync.get("latestRates", function (result) {
+        // No need to update if the saved rates date is the same as today's date
+        const dateCurrentString = new Date().toISOString().slice(0, 10);
+        if (result.latestRates.date === dateCurrentString) {
+          return;
+        }
+
+        // Fetch latest rates by passing a query string of today's date.
+        // Doesn't mean anything to the API but it means it will load the
+        // newest data instead of using cached versions.
+        fetch(`https://api.exchangerate.host/latest?${dateCurrentString}`, {
+          method: "GET",
         })
-        .then((result) => {
-          let event = new Event("change");
-          fromSelect.dispatchEvent(event);
-          return result;
-        })
-        .then((result) => {
-          date.innerText = `As at ${result.latestRates.date}`;
-          date.appendChild(reload);
-        });
+          .then((response) => response.json())
+          .then((result) => {
+            browser.storage.sync.set({ latestRates: result });
+            let event = new Event("change");
+            fromSelect.dispatchEvent(event);
+            ratesDate.innerText = result.date;
+          });
+      });
     });
-    date.appendChild(reload);
-    document.body.appendChild(date);
   }
 );
 

@@ -5,7 +5,7 @@
   "description": "Displays the converted currency in a popup bubble when highlighting numbers on a page.",
   "browser_specific_settings": {
     "gecko": {
-      "id": "currency-converter-extension-add-on@devjelo.com"
+      "id": "currency-converter-extension@dev.jelo"
     }
   },
   "permissions": ["storage", "alarms"],

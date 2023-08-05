@@ -13,6 +13,7 @@ const boxFontSize = document.querySelector("#box-font-size");
 const googleFontsCheckbox = document.querySelector("#Google-fonts-checkbox");
 const enableDark = document.querySelector("#enable-dark");
 const disableDark = document.querySelector("#disable-dark");
+const updateCurrenciesButton = document.querySelector("#update-currencies");
 const ratesDate = document.querySelector("#current-rates-date");
 const container = document.querySelector(".center");
 
@@ -141,7 +142,7 @@ saveButton.addEventListener("click", () => {
   });
   let boxFontLink = document.querySelector("#box-font-link");
   if (boxFontLink) browser.storage.sync.set({ boxFontLink: boxFontLink.value });
-  displaySuccessMessage("Successfully saved popup box settings");
+  alert("Successfully saved popup box settings");
 });
 
 // Reload page button
@@ -310,7 +311,7 @@ defaultButton.addEventListener("click", () => {
         }
       }
     );
-    displaySuccessMessage("Popup box settings reset to default");
+    alert("Popup box settings reset to default");
   });
   setTimeout(() => confirmButton.replaceWith(defaultButton), 4000);
   setTimeout(
@@ -510,41 +511,32 @@ disableDark.addEventListener("click", () => {
 });
 
 // Update exchange rates and list of currencies when clicking the button
-document.querySelector("#update-currencies").addEventListener("click", () => {
-  fetch("https://api.exchangerate.host/latest", {
-    method: "GET",
-    headers: { "cache-control": "no-cache" },
-  })
-    .then((response) => response.json())
-    .then((result) =>
-      browser.storage.sync.set({ latestRates: result }, () => {
-        displaySuccessMessage(
-          "Successfully updated exchange rates and list of currencies"
-        );
+updateCurrenciesButton.addEventListener("click", () => {
+  browser.storage.sync.get("latestRates", function (result) {
+    // No need to update if the saved rates date is the same as today's date
+    const dateCurrentString = new Date().toISOString().slice(0, 10);
+    if (result.latestRates.date === new Date().toISOString().slice(0, 10)) {
+      updateCurrenciesButton.innerText = "Already Up to Date";
+      ratesDate.innerText = result.latestRates.date;
+      return;
+    }
+
+    // Fetch latest rates by passing a query string of today's date.
+    // Doesn't mean anything to the API but it means it will load the
+    // newest data instead of using cached versions.
+    fetch(`https://api.exchangerate.host/latest?${dateCurrentString}`, {
+      method: "GET",
+    })
+      .then((response) => response.json())
+      .then((result) => {
+        browser.storage.sync.set({ latestRates: result });
         ratesDate.innerText = result.date;
-      })
-    );
+        alert("Successfully upated to the latest available rates.");
+      });
+  });
 });
 
 // Open new tabs for the relevant link
 document.querySelector("#font-link").addEventListener("click", () => {
   browser.tabs.create({ url: "https://fonts.google.com/" });
 });
-
-// function to display success message
-function displaySuccessMessage(message) {
-  // remove old message (if any)
-  let oldMsg = document.querySelector(".msg");
-  if (oldMsg) document.body.removeChild(oldMsg);
-
-  let successMsg = document.createElement("div");
-  successMsg.className = "msg";
-  successMsg.innerText = message;
-  document.body.appendChild(successMsg);
-
-  setTimeout(() => document.querySelector(".msg").classList.add("fade"), 3000);
-  setTimeout(
-    () => document.body.removeChild(document.querySelector(".msg")),
-    3500
-  );
-}

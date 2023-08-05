@@ -1,159 +1,161 @@
-body {                
-    min-width: 600px;
-    text-align: center;
-    height: 1055px;
+body {
+  min-width: 600px;
+  text-align: center;
+  height: 1055px;
+  font-family: Arial, Helvetica, sans-serif;
 }
 
 button {
-    display: block;
-    margin: 10px auto;
+  display: block;
+  margin: 10px auto;
 }
 
 .dark {
-    color: #F3F3F3;
-    background-color: #636363;
+  color: #f3f3f3;
+  background-color: #636363;
 }
 
 .date {
-    font-style: italic;
-    font-size: 11px;
-    padding-bottom: 20px;
+  font-style: italic;
+  font-size: 11px;
+  padding-bottom: 20px;
 }
 
 .description {
-    font-size: 11px;
-    margin: 0 auto 13px;
-    max-width: 400px;
+  font-size: 11px;
+  margin: 0 auto 13px;
+  max-width: 400px;
 }
 
 .description-font {
-    margin-bottom: 3px;
+  margin-bottom: 3px;
 }
 
 .divider {
-    border-bottom: 1px solid gray;
-    margin: 20px auto 16px;
-    width: 95%;
+  border-bottom: 1px solid gray;
+  margin: 20px auto 16px;
+  width: 95%;
 }
 
 #font-label {
-    margin-bottom: 0;
+  margin-bottom: 0;
 }
 
 #Google-fonts-label {
-    margin: 0;
-    user-select: none;
+  margin: 0;
+  user-select: none;
 }
 
 h1 {
-    margin: 0;
-    padding: 10px 0 20px;
+  margin: 0;
+  padding: 10px 0 20px;
 }
 
 h2 {
-    margin: 0 0 3px;
-    font-size: 15px;
-    font-weight: normal;
+  margin: 0 0 3px;
+  font-size: 15px;
+  font-weight: normal;
 }
 
 .h2-customise {
-    margin-bottom: 10px;
+  margin-bottom: 10px;
+  font-weight: bold;
 }
 
-input[type=color] {
-    width: 170px;
+input[type="color"] {
+  width: 170px;
 }
 
-input[type=text] {
-    width: 170px;
+input[type="text"] {
+  width: 170px;
 }
 
-input[type=checkbox] {
-    margin-bottom: 7px;
-    vertical-align: -1px;
+input[type="checkbox"] {
+  margin-bottom: 7px;
+  vertical-align: -1px;
 }
 
-input[type=radio] {
-    margin-right: 5px;
-    vertical-align: -1.5px;
-}   
+input[type="radio"] {
+  margin-right: 5px;
+  vertical-align: -1.5px;
+}
 
 #keys {
-    margin-top: 10px;
+  margin-top: 10px;
 }
 
 label {
-    display: inline-block;
-    margin: 7px 0;
-    font-size: 14px;
+  display: inline-block;
+  margin: 7px 0;
+  font-size: 14px;
 }
 
 .label-radio {
-    margin: 0 15px;
+  margin: 0 15px;
 }
 
 .label-radio-abovebelow {
-    margin: 0 25px;
+  margin: 0 25px;
 }
 
 .link {
-    cursor: pointer;
-    color: blue;
-    text-decoration: underline;
+  cursor: pointer;
+  color: blue;
+  text-decoration: underline;
 }
 
 .msg {
-    background:gray;
-    color: white;
-    font-size: 13px;
-    left: 50%;
-    padding: 7px 0;
-    position: fixed;
-    top: 10px;
-    transform: translateX(-50%);
-    transition: opacity 500ms;
-    user-select: none;
-    width: 100%;
+  background: gray;
+  color: white;
+  font-size: 13px;
+  left: 50%;
+  padding: 7px 0;
+  position: fixed;
+  top: 10px;
+  transform: translateX(-50%);
+  transition: opacity 500ms;
+  user-select: none;
+  width: 100%;
 }
 
 .msg.fade {
-    opacity: 0;
+  opacity: 0;
 }
 
 p {
-    font-size: 14px;
-    margin: 0;
+  font-size: 14px;
+  margin: 0;
 }
 
 #reload-page {
-    margin-bottom: 0;
+  margin-bottom: 0;
 }
 
 #select {
-    padding-bottom: 2px;
-}  
+  padding-bottom: 2px;
+}
 
 #update-currencies {
-    margin: 10px auto 8px;
+  margin: 10px auto 8px;
 }
 
 .center {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    flex-direction: column;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-direction: column;
 }
 
 .pair-container {
-    padding-top: 20px;
-    display: flex;
-    justify-content: space-between;
-    width: 50%;
+  padding-top: 20px;
+  display: flex;
+  justify-content: space-between;
+  width: 50%;
 }
 
 .add-remove-button {
-    width: 100px;
-    height: 30px;
-    display: inline-block;
-    margin: 30px 10px 10px;
+  width: 100px;
+  height: 30px;
+  display: inline-block;
+  margin: 30px 10px 10px;
 }

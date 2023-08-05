@@ -100,11 +100,8 @@ function displayPopup(result, convertedNum) {
   // Add popup box and the popup box arrow and arrow border to display converted currency
   box.className = "currency-popup";
   box.style.left =
-    selectedLocation.left +
-    selectedLocation.width / 2 +
-    window.pageXOffset +
-    "px";
-  box.style.top = selectedLocation.bottom + 10 + window.pageYOffset + "px";
+    selectedLocation.left + selectedLocation.width / 2 + window.scrollX + "px";
+  box.style.top = selectedLocation.bottom + 10 + window.scrollY + "px";
   box.style.background = result.boxColour;
   box.style.border = `1px solid ${result.boxBorderColour}`;
   box.style.borderRadius = "3px";
@@ -126,13 +123,9 @@ function displayPopup(result, convertedNum) {
   arrowBorder.style.borderLeft = "9px solid transparent";
   arrowBorder.style.borderRight = "9px solid transparent";
   arrowBorder.style.borderBottom = `9px solid ${result.boxBorderColour}`;
-  arrowBorder.style.top =
-    selectedLocation.bottom + 1 + window.pageYOffset + "px";
+  arrowBorder.style.top = selectedLocation.bottom + 1 + window.scrollY + "px";
   arrowBorder.style.left =
-    selectedLocation.left +
-    selectedLocation.width / 2 +
-    window.pageXOffset +
-    "px";
+    selectedLocation.left + selectedLocation.width / 2 + window.scrollX + "px";
   arrowBorder.style.height = "0";
   arrowBorder.style.position = "absolute";
   arrowBorder.style.transform = "translateX(-50%)";
@@ -143,12 +136,9 @@ function displayPopup(result, convertedNum) {
   arrow.style.borderLeft = "9px solid transparent";
   arrow.style.borderRight = "9px solid transparent";
   arrow.style.borderBottom = `9px solid ${result.boxColour}`;
-  arrow.style.top = selectedLocation.bottom + 2 + window.pageYOffset + "px";
+  arrow.style.top = selectedLocation.bottom + 2 + window.scrollY + "px";
   arrow.style.left =
-    selectedLocation.left +
-    selectedLocation.width / 2 +
-    window.pageXOffset +
-    "px";
+    selectedLocation.left + selectedLocation.width / 2 + window.scrollX + "px";
   arrow.style.height = "0";
   arrow.style.position = "absolute";
   arrow.style.transform = "translateX(-50%)";
@@ -159,27 +149,24 @@ function displayPopup(result, convertedNum) {
   let boxPos = box.getBoundingClientRect();
   if (result.position === "above") {
     box.style.top =
-      selectedLocation.top - boxPos.height - 10 + window.pageYOffset + "px";
+      selectedLocation.top - boxPos.height - 10 + window.scrollY + "px";
     boxPos = box.getBoundingClientRect();
-    arrowBorder.style.top =
-      selectedLocation.top - 10 + window.pageYOffset + "px";
+    arrowBorder.style.top = selectedLocation.top - 10 + window.scrollY + "px";
     arrowBorder.style.borderTop = `9px solid ${result.boxBorderColour}`;
     arrowBorder.style.borderBottom = null;
-    arrow.style.top = selectedLocation.top - 11 + window.pageYOffset + "px";
+    arrow.style.top = selectedLocation.top - 11 + window.scrollY + "px";
     arrow.style.borderTop = `9px solid ${result.boxColour}`;
     arrow.style.borderBottom = null;
     if (boxPos.left < 0) {
       box.style.transform = "none";
-      box.style.left = window.pageXOffset + "px";
+      box.style.left = window.scrollX + "px";
       if (boxPos.top < 0) {
-        box.style.top =
-          selectedLocation.bottom + 10 + window.pageYOffset + "px";
+        box.style.top = selectedLocation.bottom + 10 + window.scrollY + "px";
         arrowBorder.style.top =
-          selectedLocation.bottom + 1 + window.pageYOffset + "px";
+          selectedLocation.bottom + 1 + window.scrollY + "px";
         arrowBorder.style.borderTop = null;
         arrowBorder.style.borderBottom = `9px solid ${result.boxBorderColour}`;
-        arrow.style.top =
-          selectedLocation.bottom + 2 + window.pageYOffset + "px";
+        arrow.style.top = selectedLocation.bottom + 2 + window.scrollY + "px";
         arrow.style.borderTop = null;
         arrow.style.borderBottom = `9px solid ${result.boxColour}`;
       }
@@ -188,42 +175,40 @@ function displayPopup(result, convertedNum) {
       box.style.left =
         document.documentElement.clientWidth -
         boxPos.width +
-        window.pageXOffset +
+        window.scrollX +
         "px";
       if (boxPos.top < 0) {
-        box.style.top =
-          selectedLocation.bottom + 10 + window.pageYOffset + "px";
+        box.style.top = selectedLocation.bottom + 10 + window.scrollY + "px";
         arrowBorder.style.top =
-          selectedLocation.bottom + 1 + window.pageYOffset + "px";
+          selectedLocation.bottom + 1 + window.scrollY + "px";
         arrowBorder.style.borderTop = null;
         arrowBorder.style.borderBottom = `9px solid ${result.boxBorderColour}`;
-        arrow.style.top =
-          selectedLocation.bottom + 2 + window.pageYOffset + "px";
+        arrow.style.top = selectedLocation.bottom + 2 + window.scrollY + "px";
         arrow.style.borderTop = null;
         arrow.style.borderBottom = `9px solid ${result.boxColour}`;
       }
     } else if (boxPos.top < 0) {
-      box.style.top = selectedLocation.bottom + 10 + window.pageYOffset + "px";
+      box.style.top = selectedLocation.bottom + 10 + window.scrollY + "px";
       arrowBorder.style.top =
-        selectedLocation.bottom + 1 + window.pageYOffset + "px";
+        selectedLocation.bottom + 1 + window.scrollY + "px";
       arrowBorder.style.borderTop = null;
       arrowBorder.style.borderBottom = `9px solid ${result.boxBorderColour}`;
-      arrow.style.top = selectedLocation.bottom + 2 + window.pageYOffset + "px";
+      arrow.style.top = selectedLocation.bottom + 2 + window.scrollY + "px";
       arrow.style.borderTop = null;
       arrow.style.borderBottom = `9px solid ${result.boxColour}`;
     }
   } else {
     if (boxPos.left < 0) {
       box.style.transform = "none";
-      box.style.left = window.pageXOffset + "px";
+      box.style.left = window.scrollX + "px";
       if (boxPos.bottom > document.documentElement.clientHeight) {
         box.style.top =
-          selectedLocation.top - boxPos.height - 10 + window.pageYOffset + "px";
+          selectedLocation.top - boxPos.height - 10 + window.scrollY + "px";
         arrowBorder.style.top =
-          selectedLocation.top - 10 + window.pageYOffset + "px";
+          selectedLocation.top - 10 + window.scrollY + "px";
         arrowBorder.style.borderTop = `9px solid ${result.boxBorderColour}`;
         arrowBorder.style.borderBottom = null;
-        arrow.style.top = selectedLocation.top - 11 + window.pageYOffset + "px";
+        arrow.style.top = selectedLocation.top - 11 + window.scrollY + "px";
         arrow.style.borderTop = `9px solid ${result.boxColour}`;
         arrow.style.borderBottom = null;
       }
@@ -232,27 +217,26 @@ function displayPopup(result, convertedNum) {
       box.style.left =
         document.documentElement.clientWidth -
         boxPos.width +
-        window.pageXOffset +
+        window.scrollX +
         "px";
       if (boxPos.bottom > document.documentElement.clientHeight) {
         box.style.top =
-          selectedLocation.top - boxPos.height - 10 + window.pageYOffset + "px";
+          selectedLocation.top - boxPos.height - 10 + window.scrollY + "px";
         arrowBorder.style.top =
-          selectedLocation.top - 10 + window.pageYOffset + "px";
+          selectedLocation.top - 10 + window.scrollY + "px";
         arrowBorder.style.borderTop = `9px solid ${result.boxBorderColour}`;
         arrowBorder.style.borderBottom = null;
-        arrow.style.top = selectedLocation.top - 11 + window.pageYOffset + "px";
+        arrow.style.top = selectedLocation.top - 11 + window.scrollY + "px";
         arrow.style.borderTop = `9px solid ${result.boxColour}`;
         arrow.style.borderBottom = null;
       }
     } else if (boxPos.bottom > document.documentElement.clientHeight) {
       box.style.top =
-        selectedLocation.top - boxPos.height - 10 + window.pageYOffset + "px";
-      arrowBorder.style.top =
-        selectedLocation.top - 10 + window.pageYOffset + "px";
+        selectedLocation.top - boxPos.height - 10 + window.scrollY + "px";
+      arrowBorder.style.top = selectedLocation.top - 10 + window.scrollY + "px";
       arrowBorder.style.borderTop = `9px solid ${result.boxBorderColour}`;
       arrowBorder.style.borderBottom = null;
-      arrow.style.top = selectedLocation.top - 11 + window.pageYOffset + "px";
+      arrow.style.top = selectedLocation.top - 11 + window.scrollY + "px";
       arrow.style.borderTop = `9px solid ${result.boxColour}`;
       arrow.style.borderBottom = null;
     }

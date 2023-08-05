@@ -25,24 +25,47 @@ browser.runtime.onInstalled.addListener(function () {
 
 // Update latest exchange rates to browser storage when opening browser
 browser.runtime.onStartup.addListener(function () {
-  fetch("https://api.exchangerate.host/latest", {
-    method: "GET",
-  })
-    .then((response) => response.json())
-    .then((result) => browser.storage.sync.set({ latestRates: result }));
+  browser.storage.sync.get("latestRates", function (result) {
+    // No need to update if the saved rates date is the same as today's date
+    const dateCurrentString = new Date().toISOString().slice(0, 10);
+    if (result.latestRates.date === dateCurrentString) {
+      return;
+    }
+
+    // Fetch latest rates by passing a query string of today's date.
+    // Doesn't mean anything to the API but it means it will load the
+    // newest data instead of using cached versions.
+    fetch(`https://api.exchangerate.host/latest?${dateCurrentString}`, {
+      method: "GET",
+    })
+      .then((response) => response.json())
+      .then((result) => {
+        browser.storage.sync.set({ latestRates: result });
+      });
+  });
 });
 
 // Set alarm to update the exchange rates every 6 hours for when browser is not restarted in that time
 browser.alarms.create("alarm", { periodInMinutes: 360 });
 browser.alarms.onAlarm.addListener(function () {
-  fetch("https://api.exchangerate.host/latest", {
-    method: "GET",
-  })
-    .then((response) => response.json())
-    .then((result) => {
-      browser.storage.sync.set({ latestRates: result });
-      console.log("rates updated");
-    });
+  browser.storage.sync.get("latestRates", function (result) {
+    // No need to update if the saved rates date is the same as today's date
+    const dateCurrentString = new Date().toISOString().slice(0, 10);
+    if (result.latestRates.date === dateCurrentString) {
+      return;
+    }
+
+    // Fetch latest rates by passing a query string of today's date.
+    // Doesn't mean anything to the API but it means it will load the
+    // newest data instead of using cached versions.
+    fetch(`https://api.exchangerate.host/latest?${dateCurrentString}`, {
+      method: "GET",
+    })
+      .then((response) => response.json())
+      .then((result) => {
+        browser.storage.sync.set({ latestRates: result });
+      });
+  });
 });
 
 // Listen for when the shortcut keys are pressed to toggle extension on/off and send message to popup if it is, otherwise just toggle on/off
