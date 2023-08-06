@@ -89,12 +89,17 @@ browser.storage.sync.get(
           return;
         }
 
-        // Fetch latest rates by passing a query string of today's date.
-        // Doesn't mean anything to the API but it means it will load the
-        // newest data instead of using cached versions.
-        fetch(`https://api.exchangerate.host/latest?${dateCurrentString}`, {
-          method: "GET",
-        })
+        // Fetch latest rates by passing a query string of today's date plus the UTC hour
+        // (limits it to one new request per hour). Doesn't mean anything to the API but it
+        // means it will load the newest data instead of using cached versions.
+        const UTCHour = new Date().getUTCHours();
+
+        fetch(
+          `https://api.exchangerate.host/latest?${dateCurrentString}-${UTCHour}`,
+          {
+            method: "GET",
+          }
+        )
           .then((response) => response.json())
           .then((result) => {
             browser.storage.sync.set({ latestRates: result });
