@@ -222,11 +222,11 @@ browser.storage.sync.get(
             "saved-pair-button-dark"
           )
         : savedPairButton.classList.add("saved-pair-button");
-      savedPairButton.innerHTML = i;
+      savedPairButton.innerText = i;
 
       // Change currencies to saved pair on click of relevant button
       savedPairButton.addEventListener("click", (e) => {
-        let number = e.target.innerHTML;
+        let number = e.target.innerText;
         fromSelect.value = result.savedPairs[`from${number}`];
         toSelect.value = result.savedPairs[`to${number}`];
 

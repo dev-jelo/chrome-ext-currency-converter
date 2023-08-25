@@ -426,7 +426,7 @@ document.querySelector(".add-button").addEventListener("click", () => {
 
       pairContainer.appendChild(selectFrom);
       let p = document.createElement("p");
-      p.innerHTML = "To:";
+      p.innerText = "To:";
       pairContainer.appendChild(p);
       pairContainer.appendChild(selectTo);
 
