@@ -1,13 +1,29 @@
 "use strict";
 
+function fetchRates(initialFetch) {
+  // API key (if you are seeing this, don't even think about exploiting this key)
+  const apiKey = "fca_live_2MrxM1YLNE1b4FkOopQQ4RXIMaRjoYnDTHwyfFwr";
+
+  browser.storage.sync.get("latestRates", (result) => {
+    const twelveHoursInMS = 3600000 * 12;
+    if (initialFetch || Date.now() - twelveHoursInMS > Number(result.date)) {
+      fetch("https://api.freecurrencyapi.com/v1/latest", {
+        method: "GET",
+        headers: { apiKey },
+      })
+        .then((response) => response.json())
+        .then((result) =>
+          browser.storage.sync.set({
+            latestRates: { date: Date.now(), rates: result },
+          })
+        );
+    }
+  });
+}
+
 // Upon install, get exchange rates and currencies from exchangerate.host site and store in browser storage
 browser.runtime.onInstalled.addListener(function () {
-  // Set http request header so that there will be a check if there are changes in the json compared to the browser cached version
-  fetch("https://api.exchangerate.host/latest", {
-    method: "GET",
-  })
-    .then((response) => response.json())
-    .then((result) => browser.storage.sync.set({ latestRates: result }));
+  fetchRates(true);
 
   // Check if there are previously saved currency pairs, load defaults if not
   const defaultPairs = {
@@ -23,59 +39,15 @@ browser.runtime.onInstalled.addListener(function () {
   });
 });
 
-// Update latest exchange rates to browser storage when opening browser
+// Update latest exchange rates to chrome storage when opening browser if saved rates are older than 12 hours
 browser.runtime.onStartup.addListener(function () {
-  browser.storage.sync.get("latestRates", function (result) {
-    // No need to update if the saved rates date is the same as today's date
-    const dateCurrentString = new Date().toISOString().slice(0, 10);
-    if (result.latestRates.date === dateCurrentString) {
-      return;
-    }
-
-    // Fetch latest rates by passing a query string of today's date plus the UTC hour
-    // (limits it to one new request per hour). Doesn't mean anything to the API but it
-    // means it will load the newest data instead of using cached versions.
-    const UTCHour = new Date().getUTCHours();
-
-    fetch(
-      `https://api.exchangerate.host/latest?${dateCurrentString}-${UTCHour}`,
-      {
-        method: "GET",
-      }
-    )
-      .then((response) => response.json())
-      .then((result) => {
-        browser.storage.sync.set({ latestRates: result });
-      });
-  });
+  fetchRates(false);
 });
 
-// Set alarm to update the exchange rates every 6 hours for when browser is not restarted in that time
-browser.alarms.create("alarm", { periodInMinutes: 360 });
+// Set alarm to check for new rates every 3 hours for when chrome is not restarted in that time
+browser.alarms.create("alarm", { periodInMinutes: 180 });
 browser.alarms.onAlarm.addListener(function () {
-  browser.storage.sync.get("latestRates", function (result) {
-    // No need to update if the saved rates date is the same as today's date
-    const dateCurrentString = new Date().toISOString().slice(0, 10);
-    if (result.latestRates.date === dateCurrentString) {
-      return;
-    }
-
-    // Fetch latest rates by passing a query string of today's date plus the UTC hour
-    // (limits it to one new request per hour). Doesn't mean anything to the API but it
-    // means it will load the newest data instead of using cached versions.
-    const UTCHour = new Date().getUTCHours();
-
-    fetch(
-      `https://api.exchangerate.host/latest?${dateCurrentString}-${UTCHour}`,
-      {
-        method: "GET",
-      }
-    )
-      .then((response) => response.json())
-      .then((result) => {
-        browser.storage.sync.set({ latestRates: result });
-      });
-  });
+  fetchRates(false);
 });
 
 // Listen for when the shortcut keys are pressed to toggle extension on/off and send message to popup if it is, otherwise just toggle on/off

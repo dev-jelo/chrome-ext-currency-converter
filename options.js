@@ -22,6 +22,9 @@ browser.commands.getAll((commands) => {
   document.querySelector("#shortcut-keys").innerText = commands[0].shortcut;
 });
 
+// API key (if you are seeing this, don't even think about exploiting this key)
+const apiKey = "fca_live_2MrxM1YLNE1b4FkOopQQ4RXIMaRjoYnDTHwyfFwr";
+
 browser.storage.sync.get(
   {
     latestRates: "",
@@ -45,7 +48,9 @@ browser.storage.sync.get(
     boxFont.value = result.boxFont;
     boxFontColour.value = result.boxFontColour;
     boxFontSize.value = result.boxFontSize;
-    ratesDate.innerText = result.latestRates.date;
+    ratesDate.innerText = new Date(
+      result.latestRates.date
+    ).toLocaleDateString();
 
     result.position === "below"
       ? (positionBelow.checked = true)
@@ -197,7 +202,7 @@ previewButton.addEventListener("click", () => {
       box.style.position = "absolute";
       box.style.transform = "translateX(-50%)";
       box.style.whiteSpace = "nowrap";
-      let currenciesArray = Object.keys(result.latestRates.rates);
+      let currenciesArray = Object.keys(result.latestRates.rates.data);
       box.innerText = `${
         currenciesArray[getRandomInt(currenciesArray.length)]
       } ${(getRandomInt(100000) / 100).toLocaleString(undefined, {
@@ -348,9 +353,13 @@ browser.storage.sync
     // populate drop down lists
     let currencyDropdowns = document.querySelectorAll(".currency-dropdown");
     currencyDropdowns.forEach((elem) => {
-      for (let i = 0; i < Object.keys(result.latestRates.rates).length; i++) {
+      for (
+        let i = 0;
+        i < Object.keys(result.latestRates.rates.data).length;
+        i++
+      ) {
         let option = document.createElement("option");
-        option.text = Object.keys(result.latestRates.rates)[i];
+        option.text = Object.keys(result.latestRates.rates.data)[i];
         elem.add(option);
       }
 
@@ -416,9 +425,13 @@ document.querySelector(".add-button").addEventListener("click", () => {
       }
 
       // Populate drop down lists
-      for (let i = 0; i < Object.keys(result.latestRates.rates).length; i++) {
+      for (
+        let i = 0;
+        i < Object.keys(result.latestRates.rates.data).length;
+        i++
+      ) {
         let option = document.createElement("option");
-        option.text = Object.keys(result.latestRates.rates)[i];
+        option.text = Object.keys(result.latestRates.rates.data)[i];
         selectFrom.add(option);
         let option2 = option.cloneNode(true);
         selectTo.add(option2);
@@ -512,32 +525,29 @@ disableDark.addEventListener("click", () => {
 
 // Update exchange rates and list of currencies when clicking the button
 updateCurrenciesButton.addEventListener("click", () => {
-  browser.storage.sync.get("latestRates", function (result) {
-    // No need to update if the saved rates date is the same as today's date
-    const dateCurrentString = new Date().toISOString().slice(0, 10);
-    if (result.latestRates.date === dateCurrentString) {
-      updateCurrenciesButton.innerText = "Already Up to Date";
-      ratesDate.innerText = result.latestRates.date;
-      return;
-    }
-
-    // Fetch latest rates by passing a query string of today's date plus the UTC hour
-    // (limits it to one new request per hour). Doesn't mean anything to the API but it
-    // means it will load the newest data instead of using cached versions.
-    const UTCHour = new Date().getUTCHours();
-
-    fetch(
-      `https://api.exchangerate.host/latest?${dateCurrentString}-${UTCHour}`,
-      {
+  browser.storage.sync.get("latestRates", (result) => {
+    const twelveHoursInMS = 3600000 * 12;
+    if (Date.now() - twelveHoursInMS > Number(result.date)) {
+      fetch("https://api.freecurrencyapi.com/v1/latest", {
         method: "GET",
-      }
-    )
-      .then((response) => response.json())
-      .then((result) => {
-        browser.storage.sync.set({ latestRates: result });
-        ratesDate.innerText = result.date;
-        alert("Successfully upated to the latest available rates.");
-      });
+        headers: { apiKey },
+      })
+        .then((response) => response.json())
+        .then((result) =>
+          browser.storage.sync.set(
+            {
+              latestRates: { date: Date.now(), rates: result },
+            },
+            () => {
+              ratesDate.innerText = new Date(
+                result.latestRates.date
+              ).toLocaleDateString();
+              alert("Successfully upated to the latest available rates.");
+            }
+          )
+        );
+    }
+    alert("Exchange rates already up to date");
   });
 });
 

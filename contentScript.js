@@ -74,8 +74,8 @@ function convertCurrency(e) {
 
   function getRates(result, selectedNum) {
     let rate =
-      result.latestRates.rates[result.to] /
-      result.latestRates.rates[result.from];
+      result.latestRates.rates.data[result.to] /
+      result.latestRates.rates.data[result.from];
     let convertedNum = (selectedNum * rate).toLocaleString(undefined, {
       minimumFractionDigits: 2,
       maximumFractionDigits: 2,

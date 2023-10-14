@@ -72,7 +72,9 @@ browser.storage.sync.get(
     const updateRatesButton = document.querySelector(".reload");
     const ratesDate = document.querySelector("#rates-date");
 
-    ratesDate.innerText = result.latestRates.date;
+    ratesDate.innerText = new Date(
+      result.latestRates.date
+    ).toLocaleDateString();
 
     updateRatesButton.addEventListener("click", () => {
       rotateDeg += 360;
@@ -83,30 +85,31 @@ browser.storage.sync.get(
       }, 1000);
 
       browser.storage.sync.get("latestRates", function (result) {
-        // No need to update if the saved rates date is the same as today's date
-        const dateCurrentString = new Date().toISOString().slice(0, 10);
-        if (result.latestRates.date === dateCurrentString) {
-          return;
-        }
+        // API key (if you are seeing this, don't even think about exploiting this key)
+        const apiKey = "fca_live_2MrxM1YLNE1b4FkOopQQ4RXIMaRjoYnDTHwyfFwr";
 
-        // Fetch latest rates by passing a query string of today's date plus the UTC hour
-        // (limits it to one new request per hour). Doesn't mean anything to the API but it
-        // means it will load the newest data instead of using cached versions.
-        const UTCHour = new Date().getUTCHours();
-
-        fetch(
-          `https://api.exchangerate.host/latest?${dateCurrentString}-${UTCHour}`,
-          {
+        const twelveHoursInMS = 3600000 * 12;
+        if (Date.now() - twelveHoursInMS > Number(result.date)) {
+          fetch("https://api.freecurrencyapi.com/v1/latest", {
             method: "GET",
-          }
-        )
-          .then((response) => response.json())
-          .then((result) => {
-            browser.storage.sync.set({ latestRates: result });
-            let event = new Event("change");
-            fromSelect.dispatchEvent(event);
-            ratesDate.innerText = result.date;
-          });
+            headers: { apiKey },
+          })
+            .then((response) => response.json())
+            .then((result) =>
+              browser.storage.sync.set(
+                {
+                  latestRates: { date: Date.now(), rates: result },
+                },
+                () => {
+                  const event = new Event("change");
+                  fromSelect.dispatchEvent(event);
+                  ratesDate.innerText = new Date(
+                    result.latestRates.date
+                  ).toLocaleDateString();
+                }
+              )
+            );
+        }
       });
     });
   }
@@ -132,9 +135,13 @@ browser.storage.sync.get(
   { latestRates: "", from: "USD", to: "EUR" },
   (result) => {
     for (let i = 0; i < 2; i++) {
-      for (let j = 0; j < Object.keys(result.latestRates.rates).length; j++) {
+      for (
+        let j = 0;
+        j < Object.keys(result.latestRates.rates.data).length;
+        j++
+      ) {
         let option = document.createElement("option");
-        option.text = Object.keys(result.latestRates.rates)[j];
+        option.text = Object.keys(result.latestRates.rates.data)[j];
         currencyDropdown[i].add(option);
       }
     }
@@ -188,7 +195,8 @@ function exchangeRate(result) {
   inputNumber.value = 1;
   fromCurrency.innerText = `${result.from}`;
   let rateValue = (
-    result.latestRates.rates[result.to] / result.latestRates.rates[result.from]
+    result.latestRates.rates.data[result.to] /
+    result.latestRates.rates.data[result.from]
   ).toLocaleString(undefined, {
     minimumFractionDigits: 4,
     maximumFractionDigits: 4,
@@ -302,8 +310,8 @@ inputNumber.addEventListener("change", () => {
     { latestRates: "", from: "USD", to: "EUR" },
     (result) => {
       let rateValue = (
-        result.latestRates.rates[result.to] /
-        result.latestRates.rates[result.from]
+        result.latestRates.rates.data[result.to] /
+        result.latestRates.rates.data[result.from]
       ).toLocaleString(undefined, {
         minimumFractionDigits: 4,
         maximumFractionDigits: 4,
