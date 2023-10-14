@@ -1,36 +1,40 @@
 <!DOCTYPE html>
 <html>
-    <head>
-        <link rel="stylesheet" href="./popup.css">
-    </head>
-    <body>
-        <span class='text'>Convert from:</span>
-        <div class='center'>
-            <select class="currency" id="from"></select>
-        </div>
-        <div class="center">
-            <button id='swap-button'>to:</button>
-        </div>
-        <div class='center'>
-            <select class="currency" id="to"></select>
-        </div>
-        <div class="saved-pairs-container"></div>
-        <div class='divider'></div>
-        <span class='text'>Decimal separator:</span>
-        <div id='decimal-sep-container'>
-            <label id='period-label' for='period-separator'><b>.</b></label>
-            <input type='radio' id='period-separator' name='decimal-separator'>
-            <label id='comma-label' for='comma-separator'><b>,</b></label>
-            <input type='radio' id='comma-separator' name='decimal-separator'>
-        </div>
-        <div id='rate-divider' class='divider'></div>
-        <div id='from-currency' class='rate'></div>
-        <div class='center-number-input'>
-            <input id='input-number' value='1'>
-        </div>
-        <div class='rate'>=</div>
-        <div id='to-currency' class='rate'></div>
-        <div class="cover-all"></div>
-        <script src="./popup.js"></script>
-    </body>
+  <head>
+    <link rel="stylesheet" href="./popup.css" />
+  </head>
+  <body>
+    <span class="text">Convert from:</span>
+    <div class="center">
+      <select class="currency" id="from"></select>
+    </div>
+    <div class="center">
+      <button id="swap-button">to:</button>
+    </div>
+    <div class="center">
+      <select class="currency" id="to"></select>
+    </div>
+    <div class="saved-pairs-container"></div>
+    <div class="divider"></div>
+    <span class="text">Decimal separator:</span>
+    <div id="decimal-sep-container">
+      <label id="period-label" for="period-separator"><b>.</b></label>
+      <input type="radio" id="period-separator" name="decimal-separator" />
+      <label id="comma-label" for="comma-separator"><b>,</b></label>
+      <input type="radio" id="comma-separator" name="decimal-separator" />
+    </div>
+    <div id="rate-divider" class="divider"></div>
+    <div id="from-currency" class="rate"></div>
+    <div class="center-number-input">
+      <input id="input-number" value="1" />
+    </div>
+    <div class="rate">=</div>
+    <div id="to-currency" class="rate"></div>
+    <div class="dateContainer">
+      As at &nbsp;<span id="rates-date"></span>
+      <div class="reload">&#x21BB;</div>
+    </div>
+    <div class="cover-all"></div>
+    <script src="./popup.js"></script>
+  </body>
 </html>
