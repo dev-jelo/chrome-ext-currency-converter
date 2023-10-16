@@ -6,7 +6,10 @@ function fetchRates(initialFetch) {
 
   browser.storage.sync.get("latestRates", (result) => {
     const twelveHoursInMS = 3600000 * 12;
-    if (initialFetch || Date.now() - twelveHoursInMS > Number(result.date)) {
+    if (
+      initialFetch ||
+      Date.now() - twelveHoursInMS > Number(result.latestRates.date)
+    ) {
       fetch("https://api.freecurrencyapi.com/v1/latest", {
         method: "GET",
         headers: { apiKey },

@@ -89,7 +89,7 @@ browser.storage.sync.get(
         const apiKey = "fca_live_2MrxM1YLNE1b4FkOopQQ4RXIMaRjoYnDTHwyfFwr";
 
         const twelveHoursInMS = 3600000 * 12;
-        if (Date.now() - twelveHoursInMS > Number(result.date)) {
+        if (Date.now() - twelveHoursInMS > Number(result.latestRates.date)) {
           fetch("https://api.freecurrencyapi.com/v1/latest", {
             method: "GET",
             headers: { apiKey },
