@@ -90,7 +90,7 @@ chrome.storage.sync.get(
       chrome.storage.sync.get("latestRates", (result) => {
         // Update rates only if older than 12 hours
         const twelveHoursInMS = 3600000 * 12;
-        if (Date.now() - twelveHoursInMS > Number(result.date)) {
+        if (Date.now() - twelveHoursInMS > Number(result.latestRates.date)) {
           fetch("https://api.freecurrencyapi.com/v1/latest", {
             method: "GET",
             headers: { apiKey },

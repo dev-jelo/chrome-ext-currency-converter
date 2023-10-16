@@ -35,7 +35,7 @@ chrome.runtime.onInstalled.addListener(function () {
 chrome.runtime.onStartup.addListener(function () {
   chrome.storage.sync.get("latestRates", (result) => {
     const twelveHoursInMS = 3600000 * 12;
-    if (Date.now() - twelveHoursInMS > Number(result.date)) {
+    if (Date.now() - twelveHoursInMS > Number(result.latestRates.date)) {
       fetch("https://api.freecurrencyapi.com/v1/latest", {
         method: "GET",
         headers: { apiKey },
@@ -55,7 +55,7 @@ chrome.alarms.create("alarm", { periodInMinutes: 180 });
 chrome.alarms.onAlarm.addListener(function () {
   chrome.storage.sync.get("latestRates", (result) => {
     const twelveHoursInMS = 3600000 * 12;
-    if (Date.now() - twelveHoursInMS > Number(result.date)) {
+    if (Date.now() - twelveHoursInMS > Number(result.latestRates.date)) {
       fetch("https://api.freecurrencyapi.com/v1/latest", {
         method: "GET",
         headers: { apiKey },
