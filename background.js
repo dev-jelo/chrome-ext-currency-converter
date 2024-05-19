@@ -45,6 +45,15 @@ browser.runtime.onInstalled.addListener(function () {
 // Update latest exchange rates to chrome storage when opening browser if saved rates are older than 12 hours
 browser.runtime.onStartup.addListener(function () {
   fetchRates(false);
+
+  // Set correct icon colour (B&W) for if the extension has been toggled off previously
+  browser.storage.sync.get(["toggle"], function (result) {
+    if (result.toggle === "off") {
+      browser.action.setIcon({
+        path: "icons/extension_icon_128(off).png",
+      });
+    }
+  });
 });
 
 // Set alarm to check for new rates every 3 hours for when chrome is not restarted in that time
