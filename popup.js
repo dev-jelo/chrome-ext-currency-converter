@@ -104,9 +104,7 @@ browser.storage.sync.get(
             () => {
               const event = new Event("change");
               fromSelect.dispatchEvent(event);
-              ratesDate.innerText = new Date(
-                result.latestRates.date
-              ).toLocaleDateString();
+              ratesDate.innerText = new Date(result.date).toLocaleDateString();
             }
           );
         });
