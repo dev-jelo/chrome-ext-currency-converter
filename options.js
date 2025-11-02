@@ -16,9 +16,6 @@ const disableDark = document.querySelector("#disable-dark");
 const ratesDate = document.querySelector("#current-rates-date");
 const container = document.querySelector(".center");
 
-// API key (if you are seeing this, don't even think about exploiting this key)
-const apiKey = "fca_live_2MrxM1YLNE1b4FkOopQQ4RXIMaRjoYnDTHwyfFwr";
-
 // Set previously saved settings
 chrome.commands.getAll((commands) => {
   document.querySelector("#shortcut-keys").innerText = commands[0].shortcut;
@@ -521,32 +518,20 @@ disableDark.addEventListener("click", () => {
 
 // Update exchange rates and list of currencies if saved data older than 12 hours when clicking the button
 document.querySelector("#update-currencies").addEventListener("click", () => {
-  chrome.storage.sync.get("latestRates", (result) => {
-    const twelveHoursInMS = 3600000 * 12;
-    if (Date.now() - twelveHoursInMS > Number(result.latestRates.date)) {
-      fetch("https://api.freecurrencyapi.com/v1/latest", {
-        method: "GET",
-        headers: { apiKey },
-      })
-        .then((response) => response.json())
-        .then((result) =>
-          chrome.storage.sync.set(
-            {
-              latestRates: { date: Date.now(), rates: result },
-            },
-            () => {
-              displaySuccessMessage(
-                "Successfully updated exchange rates and list of currencies"
-              );
-              ratesDate.innerText = new Date(
-                result.latestRates.date
-              ).toLocaleDateString();
-            }
-          )
-        );
-    }
-    displaySuccessMessage("Exchange rates already up to date");
-  });
+  fetch("https://d31tvtj54mj8x5.cloudfront.net/rates", {
+    method: "GET",
+  })
+    .then((response) => response.json())
+    .then((result) => {
+      // Do nothing if no data returned. Likely due to API request limit being reached
+      if (!result.data) {
+        return;
+      }
+
+      chrome.storage.sync.set({
+        latestRates: { date: result.date, rates: { data: result.data } },
+      });
+    });
 });
 
 // Open new tabs for the relevant links

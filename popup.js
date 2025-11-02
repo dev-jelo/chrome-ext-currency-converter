@@ -31,9 +31,6 @@ const selects = document.querySelectorAll("select");
 
 let rotateDeg = 0;
 
-// API key (if you are seeing this, don't even think about exploiting this key)
-const apiKey = "fca_live_2MrxM1YLNE1b4FkOopQQ4RXIMaRjoYnDTHwyfFwr";
-
 chrome.storage.sync.get(
   {
     toggle: "on",
@@ -87,27 +84,20 @@ chrome.storage.sync.get(
         updateRatesButton.style.pointerEvents = "auto";
       }, 1000);
 
-      chrome.storage.sync.get("latestRates", (result) => {
-        // Update rates only if older than 12 hours
-        const twelveHoursInMS = 3600000 * 12;
-        if (Date.now() - twelveHoursInMS > Number(result.latestRates.date)) {
-          fetch("https://api.freecurrencyapi.com/v1/latest", {
-            method: "GET",
-            headers: { apiKey },
-          })
-            .then((response) => response.json())
-            .then((result) => {
-              chrome.storage.sync.set({
-                latestRates: { date: Date.now(), rates: result },
-              });
-              const event = new Event("change");
-              fromSelect.dispatchEvent(event);
-              ratesDate.innerText = new Date(
-                result.latestRates.date
-              ).toLocaleDateString();
-            });
-        }
-      });
+      fetch("https://d31tvtj54mj8x5.cloudfront.net/rates", {
+        method: "GET",
+      })
+        .then((response) => response.json())
+        .then((result) => {
+          // Do nothing if no data returned. Likely due to API request limit being reached
+          if (!result.data) {
+            return;
+          }
+
+          chrome.storage.sync.set({
+            latestRates: { date: result.date, rates: { data: result.data } },
+          });
+        });
     });
   }
 );

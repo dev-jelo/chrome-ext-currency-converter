@@ -1,21 +1,25 @@
 "use strict";
 
-// API key (if you are seeing this, don't even think about exploiting this key)
-const apiKey = "fca_live_2MrxM1YLNE1b4FkOopQQ4RXIMaRjoYnDTHwyfFwr";
+async function fetchRates() {
+  fetch("https://d31tvtj54mj8x5.cloudfront.net/rates", {
+    method: "GET",
+  })
+    .then((response) => response.json())
+    .then((result) => {
+      // Do nothing if no data returned. Likely due to API request limit being reached
+      if (!result.data) {
+        return;
+      }
+
+      chrome.storage.sync.set({
+        latestRates: { date: result.date, rates: { data: result.data } },
+      });
+    });
+}
 
 // Upon install, fetch exchange rates and currencies and store in chrome storage
 chrome.runtime.onInstalled.addListener(function () {
-  // Fetch rates and add current date to fetched results object to restrict to daily updates
-  fetch("https://api.freecurrencyapi.com/v1/latest", {
-    method: "GET",
-    headers: { apiKey },
-  })
-    .then((response) => response.json())
-    .then((result) =>
-      chrome.storage.sync.set({
-        latestRates: { date: Date.now(), rates: result },
-      })
-    );
+  fetchRates();
 
   // Check if there are previously saved currency pairs, load defaults if not
   const defaultPairs = {
@@ -31,43 +35,15 @@ chrome.runtime.onInstalled.addListener(function () {
   });
 });
 
-// Update latest exchange rates to chrome storage when opening browser if saved rates are older than 12 hours
+// Update latest exchange rates to chrome storage when opening browser
 chrome.runtime.onStartup.addListener(function () {
-  chrome.storage.sync.get("latestRates", (result) => {
-    const twelveHoursInMS = 3600000 * 12;
-    if (Date.now() - twelveHoursInMS > Number(result.latestRates.date)) {
-      fetch("https://api.freecurrencyapi.com/v1/latest", {
-        method: "GET",
-        headers: { apiKey },
-      })
-        .then((response) => response.json())
-        .then((result) =>
-          chrome.storage.sync.set({
-            latestRates: { date: Date.now(), rates: result },
-          })
-        );
-    }
-  });
+  fetchRates();
 });
 
 // Set alarm to check for new rates every 3 hours for when chrome is not restarted in that time
 chrome.alarms.create("alarm", { periodInMinutes: 180 });
 chrome.alarms.onAlarm.addListener(function () {
-  chrome.storage.sync.get("latestRates", (result) => {
-    const twelveHoursInMS = 3600000 * 12;
-    if (Date.now() - twelveHoursInMS > Number(result.latestRates.date)) {
-      fetch("https://api.freecurrencyapi.com/v1/latest", {
-        method: "GET",
-        headers: { apiKey },
-      })
-        .then((response) => response.json())
-        .then((result) =>
-          chrome.storage.sync.set({
-            latestRates: { date: Date.now(), rates: result },
-          })
-        );
-    }
-  });
+  fetchRates();
 });
 
 // Listen for when the shortcut keys are pressed to toggle extension on/off and send message to popup if it is, otherwise just toggle on/off
