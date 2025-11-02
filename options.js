@@ -22,9 +22,6 @@ browser.commands.getAll((commands) => {
   document.querySelector("#shortcut-keys").innerText = commands[0].shortcut;
 });
 
-// API key (if you are seeing this, don't even think about exploiting this key)
-const apiKey = "fca_live_2MrxM1YLNE1b4FkOopQQ4RXIMaRjoYnDTHwyfFwr";
-
 browser.storage.sync.get(
   {
     latestRates: "",
@@ -525,30 +522,26 @@ disableDark.addEventListener("click", () => {
 
 // Update exchange rates and list of currencies when clicking the button
 updateCurrenciesButton.addEventListener("click", () => {
-  browser.storage.sync.get("latestRates", (result) => {
-    const twelveHoursInMS = 3600000 * 12;
-    if (Date.now() - twelveHoursInMS > Number(result.latestRates.date)) {
-      fetch("https://api.freecurrencyapi.com/v1/latest", {
-        method: "GET",
-        headers: { apiKey },
-      })
-        .then((response) => response.json())
-        .then((result) =>
-          browser.storage.sync.set(
-            {
-              latestRates: { date: Date.now(), rates: result },
-            },
-            () => {
-              ratesDate.innerText = new Date(
-                result.latestRates.date
-              ).toLocaleDateString();
-              alert("Successfully upated to the latest available rates.");
-            }
-          )
-        );
-    }
-    alert("Exchange rates already up to date");
-  });
+  fetch("https://d31tvtj54mj8x5.cloudfront.net/rates", {
+    method: "GET",
+  })
+    .then((response) => response.json())
+    .then((result) => {
+      // Do nothing if no data returned. Likely due to API request limit being reached
+      if (!result.data) {
+        return;
+      }
+
+      browser.storage.sync.set(
+        {
+          latestRates: { date: result.date, rates: { data: result.data } },
+        },
+        () => {
+          ratesDate.innerText = new Date(result.date).toLocaleDateString();
+          alert("Successfully upated to the latest available rates.");
+        }
+      );
+    });
 });
 
 // Open new tabs for the relevant link

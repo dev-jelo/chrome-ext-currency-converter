@@ -1,32 +1,25 @@
 "use strict";
 
-function fetchRates(initialFetch) {
-  // API key (if you are seeing this, don't even think about exploiting this key)
-  const apiKey = "fca_live_2MrxM1YLNE1b4FkOopQQ4RXIMaRjoYnDTHwyfFwr";
+function fetchRates() {
+  fetch("https://d31tvtj54mj8x5.cloudfront.net/rates", {
+    method: "GET",
+  })
+    .then((response) => response.json())
+    .then((result) => {
+      // Do nothing if no data returned. Likely due to API request limit being reached
+      if (!result.data) {
+        return;
+      }
 
-  browser.storage.sync.get("latestRates", (result) => {
-    const twelveHoursInMS = 3600000 * 12;
-    if (
-      initialFetch ||
-      Date.now() - twelveHoursInMS > Number(result.latestRates.date)
-    ) {
-      fetch("https://api.freecurrencyapi.com/v1/latest", {
-        method: "GET",
-        headers: { apiKey },
-      })
-        .then((response) => response.json())
-        .then((result) =>
-          browser.storage.sync.set({
-            latestRates: { date: Date.now(), rates: result },
-          })
-        );
-    }
-  });
+      browser.storage.sync.set({
+        latestRates: { date: result.date, rates: { data: result.data } },
+      });
+    });
 }
 
 // Upon install, get exchange rates and currencies from exchangerate.host site and store in browser storage
 browser.runtime.onInstalled.addListener(function () {
-  fetchRates(true);
+  fetchRates();
 
   // Check if there are previously saved currency pairs, load defaults if not
   const defaultPairs = {
@@ -44,7 +37,7 @@ browser.runtime.onInstalled.addListener(function () {
 
 // Update latest exchange rates to chrome storage when opening browser if saved rates are older than 12 hours
 browser.runtime.onStartup.addListener(function () {
-  fetchRates(false);
+  fetchRates();
 
   // Set correct icon colour (B&W) for if the extension has been toggled off previously
   browser.storage.sync.get(["toggle"], function (result) {
@@ -59,7 +52,7 @@ browser.runtime.onStartup.addListener(function () {
 // Set alarm to check for new rates every 3 hours for when chrome is not restarted in that time
 browser.alarms.create("alarm", { periodInMinutes: 180 });
 browser.alarms.onAlarm.addListener(function () {
-  fetchRates(false);
+  fetchRates();
 });
 
 // Listen for when the shortcut keys are pressed to toggle extension on/off and send message to popup if it is, otherwise just toggle on/off
